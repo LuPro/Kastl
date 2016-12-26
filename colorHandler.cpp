@@ -26,7 +26,7 @@ uint32_t ColorHandler::RGBa_to_RGB (uint32_t RGBa) {
   return val_RGB;
 }
 
-//flushed a desired LED strip with a desired RGB color, use Strips enum to choose which strip to use
+//flushes a desired LED strip with a desired RGB color, use Strips enum to choose which strip to use
 void ColorHandler::colorWipe (uint32_t color, uint8_t stripPos) {
   for (uint8_t i = 0; i < strips[stripPos].numPixels(); i++) { //iterates through every pixel of the LED strip
     strips[stripPos].setPixelColor (i, color);
@@ -50,10 +50,37 @@ uint32_t ColorHandler::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t al
   return RGBa;
 }
 
-//does nothing as of yet, should get the RGBa data via serial. Wether there is a Raspberry Pi or not changes if this function has to
+
+//--[[does nothing as of yet]]--, should get the RGBa data via serial. Wether there is a Raspberry Pi or not changes if this function has to
 //be able to decipher the whole data protocol defined by BCH and SAL, or just the Lights part
-uint32_t ColorHandler::getRGBaSerial () {
-  return 1;
+//now does SOMETHING, untested as of yet, could do anything right now. Code comments will come when it is tested
+void ColorHandler::getRGBaSerial () {
+  byte buffer;
+  static uint8_t byteCount = 0;
+  
+  for (; Serial.available(); byteCount++) {
+    buffer = Serial.read();
+
+    switch (byteCount) {
+      case (3 - chAlpha):
+        cleanFlagRGBa = false;
+        RGBa = 0;
+        RGBa |= (buffer << 24);
+        break;
+      case (3 - chB):
+        RGBa |= (buffer << 16);
+        break;
+      case (3 - chG):
+        RGBa |= (buffer << 8);
+        break;
+      case (3 - chR):
+        RGBa |= buffer;
+        cleanFlagRGBa = true;
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 //returns a desired channel of a RGBa color, use the Channels enum for selection of the channel
