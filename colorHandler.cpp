@@ -22,7 +22,7 @@ uint32_t ColorHandler::RGBa_to_RGB (uint32_t RGBa) {
   val_RGB |= g;
   val_RGB = val_RGB << 8;
   val_RGB |= r;
-  
+
   return val_RGB;
 }
 
@@ -46,35 +46,36 @@ uint32_t ColorHandler::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t al
   RGBa |= g;
   RGBa = RGBa << 8;
   RGBa |= r;
-  
+
   return RGBa;
 }
 
-
-//--[[does nothing as of yet]]--, should get the RGBa data via serial. Wether there is a Raspberry Pi or not changes if this function has to
+//--[[does nothing as of yet,]]-- should get the RGBa data via serial. Whether there is a Raspberry Pi or not changes if this function has to
 //be able to decipher the whole data protocol defined by BCH and SAL, or just the Lights part
-//now does SOMETHING, untested as of yet, could do anything right now. Code comments will come when it is tested
+//expects the order R, G, B, alpha
+//still doesn't store the values correctly, something probably goes wrong with the bit shifting
 void ColorHandler::getRGBaSerial () {
-  byte buffer;
+  byte colBuffer;
   static uint8_t byteCount = 0;
-  
+
   for (; Serial.available(); byteCount++) {
-    buffer = Serial.read();
+    colBuffer = Serial.read();
 
     switch (byteCount) {
-      case (3 - chAlpha):
+      case (chR):
         cleanFlagRGBa = false;
         RGBa = 0;
-        RGBa |= (buffer << 24);
+        RGBa |= colBuffer;
         break;
-      case (3 - chB):
-        RGBa |= (buffer << 16);
+      case (chG):
+        RGBa |= (colBuffer << 8);
         break;
-      case (3 - chG):
-        RGBa |= (buffer << 8);
+      case (chB):
+        RGBa |= (colBuffer << 16);
         break;
-      case (3 - chR):
-        RGBa |= buffer;
+      case (chAlpha):
+        RGBa |= (colBuffer << 24);
+        byteCount = 0;
         cleanFlagRGBa = true;
         break;
       default:
@@ -85,5 +86,5 @@ void ColorHandler::getRGBaSerial () {
 
 //returns a desired channel of a RGBa color, use the Channels enum for selection of the channel
 uint8_t ColorHandler::getColorChannel (uint8_t channel, const uint32_t &RGBa) {
-  return (RGBa >> (8*channel)) & B11111111;
+  return (RGBa >> (8 * channel)) & B11111111;
 }
