@@ -40,7 +40,7 @@ class ColorHandler {
     uint32_t RGBa = 0;
     bool cleanFlagRGBa = false; //Tells wether RGBa can be used (clean), or if it isn't transmitted completely (dirty)
     //Note to myself: maybe handle this as an interrupt?
-
+  public:
     uint8_t getColorChannel (uint8_t channel, const uint32_t &RGBa); //extracts a color channel out of a RGBa color
     
   public:
@@ -53,7 +53,7 @@ class ColorHandler {
 
     //Color functions
     uint32_t generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t alpha); //is only used for debugging purposes
-    uint32_t getRGBaSerial(); //reads the serial connection 
+    void getRGBaSerial(); //reads the serial connection 
     uint32_t RGBa_to_RGB (uint32_t RGBa); //converts RGBa color to RGB color
 
     inline uint32_t getRGBa() {
@@ -61,9 +61,7 @@ class ColorHandler {
       return RGBa;
     }
     inline bool RGBaIsClean() {
-      //ATTENTION!, this is only for debugging purposes, otherwise RGBa would always be true!
-      return true;
-      //return cleanFlagRGBa;
+      return cleanFlagRGBa;
     }
 
     //Strip functions
