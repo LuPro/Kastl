@@ -12,20 +12,17 @@ void loop() {
   //color consists of 3 channels (in this order): 8b blue, 8b green, 8b red
   uint32_t RGBa, color;
 
-  //If there is serial data available, read this data
-  //available means new (unread as of yet) data in the dedicated serial buffer (buffer size default: 64 byte)
-  if (Serial.available()) {
-    lights.getRGBaSerial();
-  }
+  lights.getRGBaSerial();
 
   //if RGBa is clean, the value can be extracted
   //clean means, that the complete RGBa value is received and stored. If this would not be here, the could be cases where
   //the RGBa value is used even if only half of it got transmitted via serial connection. This ensures data integrity
   if (lights.RGBaIsClean()) {
     RGBa = lights.getRGBa();
+    Serial.println(RGBa);
   }
 
-  RGBa = lights.generateRGBa (127, 127, 127, 127);    //generate a test color, only for debug
+  //RGBa = lights.generateRGBa (127, 127, 127, 127);    //generate a test color, only for debug
 
   color = lights.RGBa_to_RGB(RGBa);
   lights.colorWipe (color, top);
@@ -34,4 +31,3 @@ void loop() {
   //the program won't work properly if this is left for normal use
   delay(500);
 }
-
