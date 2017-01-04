@@ -36,7 +36,7 @@ class ColorHandler {
       Adafruit_NeoPixel(NR_LEDS_MID, DATA_PIN_MID, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_DRAWER, DATA_PIN_DRAWER, NEO_RGB + NEO_KHZ800)
     };
-    
+
     uint32_t RGBa = 0;
     bool cleanFlagRGBa = false; //Tells wether RGBa can be used (clean), or if it isn't transmitted completely (dirty)
     //Note to myself: maybe handle this as an interrupt?
