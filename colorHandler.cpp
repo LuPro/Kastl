@@ -55,14 +55,14 @@ uint32_t ColorHandler::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t al
 //expects the order R, G, B, alpha
 //still doesn't store the values correctly, something probably goes wrong with the bit shifting
 void ColorHandler::getRGBaSerial () {
-  byte colBuffer;
+  uint32_t colBuffer;     //buffer has to be 32 bit, otherwise it cannot be shifted far enough
   static uint8_t byteCount = 0;
 
   for (; Serial.available(); byteCount++) {
     colBuffer = Serial.read();
 
     switch (byteCount) {
-      case (chR):
+      case (chR):                   //Stores the red channel, sets cleanFlag to false, so RGBa doesn't get read in the process
         cleanFlagRGBa = false;
         RGBa = 0;
         RGBa |= colBuffer;
