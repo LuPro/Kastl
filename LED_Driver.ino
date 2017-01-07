@@ -1,12 +1,19 @@
-#include "colorHandler.h"
+#include "stripHandler.h"
+#include "color.h"
+#include "serialHandler.h"
 
 void setup() {
-  //Initialize Serial connection, only for debug purposes
   Serial.begin(9600);
 }
 
 void loop() {
-  static ColorHandler lights;   //ColorHandler handles everything related to LED strips and color functions
+  StripHandler strips;            //contains all strips and the needed information for them
+  SerialHandler serial (strips);  //ATTENTION! explain this (class structure)
+
+  serial.poll();
+  strips.updateEffects();
+  
+  /*static ColorHandler lights;   //ColorHandler handles everything related to LED strips and color functions
 
   //RGBa consists of 4 channels (in this order): 8b alpha, 8b blue, 8b green, 8b red
   //color consists of 3 channels (in this order): 8b blue, 8b green, 8b red
@@ -29,5 +36,5 @@ void loop() {
 
   //use this delay only if debugging via serial interface - with this delay you can read the individual debug infos, but
   //the program won't work properly if this is left for normal use
-  delay(500);
+  delay(500);*/
 }
