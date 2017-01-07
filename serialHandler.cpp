@@ -1,15 +1,18 @@
 #include "serialHandler.h"
 
-void serialHandler::pollSerial () {
+void SerialHandler::poll () {
   if (Serial.available()) {
     uint8_t inData = 0;
-    uint8_t mode = 0;
 
     //reads the serial buffer
     inData = Serial.read();
-    mode = (inData >> 6);
 
-    //chooses which function mode was sent
+    //the first byte of data includes mode
+    if (byteOffset == 0) {
+      mode = (inData >> 6);
+    }
+
+    //chooses which function mode was sent and runs the correct function for this mode
     switch (mode) {
       case lights:
         parseColor (inData);
@@ -23,16 +26,49 @@ void serialHandler::pollSerial () {
   }
 }
 
-void serialHandler::parseColor (const uint8_t &firstByte) {
-  uint8_t strip, effects, effSetting;
+void SerialHandler::parseColor (const uint8_t &data) {
+  static uint8_t strip = 0, effect = 0;
+  static uint8_t r = 0, g = 0, b = 0, alpha = 0;
 
-  strip = ((firstByte & B00110000) >> 4);
-  effects = ((firstByte & B00001100) >> 2);
-  effSetting = (firstByte & B00000011);
+  static Color color;
+
+  switch (byteOffset) {
+    case 0:
+      strip = ((data & B00110000) >> 4);
+      effect = (data & B00001111);
+      break;
+    case 1:
+      r = data;
+      break;
+    case 2:
+      g = data;
+      break;
+    case 3:
+      b = data;
+      break;
+    case 4:
+      alpha = data;
+
+      color.setCh_r (r);
+      color.setCh_g (g);
+      color.setCh_b (b);
+      color.setCh_alpha (alpha);
+
+      //more colors than one are possible by setting the byte offset back to 1 for a certain effect (eg: breathing with two
+      //colors. A helper variable would also be needed which stores how often this got reseted, otherwise there'll be
+      //an endless loop
+      strips.setup (strip, color.getRGB (), effect);  //Strip effects currently ignored
+      
+      byteOffset = 0; //reset byteOffset
+      break;
+    default:
+      break;
+  }
+
   /*uint32_t colBuffer;     //buffer has to be 32 bit, otherwise it cannot be shifted far enough
-  static uint8_t byteCount = 0;
+    static uint8_t byteCount = 0;
 
-  for (; Serial.available(); byteCount++) {
+    for (; Serial.available(); byteCount++) {
     colBuffer = Serial.read();
 
     switch (byteCount) {
@@ -55,10 +91,9 @@ void serialHandler::parseColor (const uint8_t &firstByte) {
       default:
         break;
     }
-  }*/
+    }*/
 }
 
-void serialHandler::parseAlarm (const uint8_t &firstByte) {
-  
-}
+void SerialHandler::parseAlarm (const uint8_t &firstByte) {
 
+}
