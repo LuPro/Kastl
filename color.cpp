@@ -42,6 +42,16 @@ uint32_t Color::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t alpha) {
   return RGBa;
 }
 
+void Color::setColorRGB (uint32_t color) {
+  r = color & B11111111;
+  color = color >> 8;
+  g = color & B11111111;
+  color = color >> 8;
+  b = color & B11111111;
+  
+  alpha = 255;
+}
+
 //returns a desired channel of a RGBa color, use the Channels enum for selection of the channel
 uint8_t Color::getChannel (uint8_t channel, const uint32_t &RGBa) {
   return (RGBa >> (8 * channel)) & B11111111;
