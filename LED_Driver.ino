@@ -18,7 +18,7 @@ void setup() {
   //turn TMR2 completely off
   //select clocksource (none) == TMR2 stopped
   TCCR2B = B00000000;
-  //reset TMR2 value to 0, in case it already coutned something before being turned off
+  //reset TMR2 value to 0, in case it already counted something before being turned off
   TCNT2 = 0;
   //reset the interrupt flag
   TIFR2 = B00000000;
@@ -54,15 +54,23 @@ void loop() {
     switch (gboard.getGestureCode()) {
       case fWE:
         strips.toggle();
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
         break;
       case fEW:
         strips.toggle();
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
         break;
       case fSN:
         strips.cycleEffects(0, true);
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
         break;
       case fNS:
         strips.cycleEffects(0, false);
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
         break;
       default:
         break;
@@ -73,37 +81,42 @@ void loop() {
   strips.updateEffects();
 }
 
-//TODO: write TMR interrupt that applies gesture inputs to the correct handlers (stripHandler, alarmHandler)
-
 //TMR2 will overflow every 16,384 milliseconds (with prescaler of 1024 on 16MHz). This is the duration of the timeout for gesture board codes
 ISR (TIMER2_OVF_vect) {
-  Serial.println("Reset Timer");
   //select clocksource (none) == TMR2 stopped
   TCCR2B = B00000000;
+  //disable TMR2 overflow interrupt
+  TIMSK2 = B00000000;
   //reset TMR2 value to 0
   TCNT2 = 0;
+  //reset TMR2 interrupt flag
+  TIFR2 = B00000000;
   gboard.set_cleanFlag_gC (true);
 }
 
-//functions need to be renamed to the correct ISR handler
 //INT0: GPIN1: alphaUp
 //INT1: GPIN2: alphaDown
-void gesturePin1 () {
+//Interrupt Service Routine of the INT0 interrupt vector
+ISR (INT0_vect) {
   //strips.alphaUp();
 }
 
-void gesturePin2 () {
+//Interrupt Service Routine of the INT1 interrupt vector
+ISR (INT1_vect) {
   //strips.alphaDown();
 }
 
-void gesturePin3 () { //MSB
+//Interrupt Service Routine of the PCINT0 interrupt vector
+ISR (PCINT0_vect) { //MSB
   gboard.setGestureBit (2);
 }
 
-void gesturePin6 () { //Bit 1
+//Interrupt Service Routine of the PCINT1 interrupt vector
+ISR (PCINT1_vect) { //Bit 1
   gboard.setGestureBit (1);
 }
 
-void gesturePin7 () { //LSB
+//Interrupt Service Routine of the PCINT2 interrupt vector
+ISR (PCINT2_vect) { //LSB
   gboard.setGestureBit (0);
 }
