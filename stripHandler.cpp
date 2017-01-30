@@ -1,77 +1,149 @@
 #include "stripHandler.h"
 
-StripHandler::StripHandler (const Adafruit_NeoPixel strips[], const uint8_t &curEffect) {
-  for (uint8_t i = 0; i < 3; i++) {
-    for (uint8_t n = 0; n < this->strips[i].numPixels(); n++) {
-      this->strips[i].setPixelColor (n, strips[i].getPixelColor (n));
-    }
-  }
-  this->currentEffect = curEffect;  //"this->" is not needed, but is included in case I want to change curEffect to currentEffect
-}
-
-StripHandler StripHandler::operator= (const StripHandler &stripsIn) {
-  return StripHandler(stripsIn.strips, stripsIn.currentEffect);
-}
-
-void StripHandler::setup (const uint32_t &color, const uint8_t &stripPos, const uint8_t &effect) {
+void StripHandler::setup (const uint32_t &color, const uint8_t &group, const uint8_t &effect) {
   switch (effect) {
     case staticCol:
-      colorWipe (color, stripPos);
+      currentEffect[group] = staticCol;
+      Serial.print("prim col: "); Serial.println(color);
+      Serial.print("group: "); Serial.println(group);
+      primaryCol[group] = color;
+      colorWipe (color, group);
+      stripsOn = true;
+      break;
+    case breathingSlow:
+      currentEffect[group] = breathingSlow;
+      primaryCol[group] = color;
+      breathing (color, group, DELAY_BREATHING_SLOW);
+      stripsOn = true;
       break;
     default:
       break;
-  }  
+  }
+}
+
+void StripHandler::alphaUp () {
+
+}
+
+void StripHandler::alphaDown () {
+
+}
+
+void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
+  if (stripsOn) {
+    if (up) {
+      currentEffect[group]++;
+    } else {
+      currentEffect[group]--;
+    }
+    //currentEffect[group] %= 7;
+    currentEffect[group] %= 2;    //only for debugging
+    Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
+  } else {
+    toggle();
+  }
+
 }
 
 //flushes a desired LED strip with a desired RGB color, use Strips enum to choose which strip to use
-void StripHandler::colorWipe (uint32_t color, uint8_t stripPos) {
-  for (uint8_t i = 0; i < strips[stripPos].numPixels(); i++) { //iterates through every pixel of the LED strip
-    strips[stripPos].setPixelColor (i, color);
+void StripHandler::colorWipe (const uint32_t &color, const uint8_t &group) {
+  uint8_t passes = 0;
+  uint8_t strip = 0;
+
+  if (group == 0) {
+    passes = 2;
+  } else {
+    passes = 3;
+    strip = 2;
   }
-  strips[stripPos].show(); //shows the LED strip. Internal function of the Adafruit_Neopixel library. Is used to actually apply the color info
+
+  for (; strip < passes; strip++) {
+    for (uint8_t i = 0; i < strips[strip].numPixels(); i++) { //iterates through every pixel of the LED strip
+      strips[strip].setPixelColor (i, color);
+    }
+    strips[strip].show(); //shows the LED strip. Internal function of the Adafruit_Neopixel library. Is used to actually apply the color info
+  }
+}
+
+//effects need to use a seperate alpha channel for global brightness adjustments to work - IMPLEMENT THIS!!!
+void StripHandler::breathing (const uint32_t &color, const uint8_t &group, const uint16_t &delayTime) {
+  static Color col;
+  static uint8_t alpha = 0;
+  static bool up = false;
+  static uint8_t borderDiff = (BREATH_BORDER_UP - BREATH_BORDER_DN) * 0.1;
+  uint8_t distanceBorderDN = alpha - BREATH_BORDER_DN;
+  uint8_t distanceBorderUP = BREATH_BORDER_UP - alpha;
+  uint8_t generalDelay = 127;
+  uint8_t delayFactor = 127;
+  uint8_t passes = 0;
+  uint8_t stripPos = 0;
+
+  unsigned long long now = 0;
+  now = millis();
+
+  if (group == 0) {
+    passes = 2;
+  } else {
+    passes = 3;
+    stripPos = 2;
+  }
+
+  generalDelay = distanceBorderUP;
+  if (generalDelay < 100) {
+    generalDelay = 100;
+  }
+
+  for (; stripPos < passes; stripPos++) {
+    if (distanceBorderUP < distanceBorderDN) {
+      delayFactor += distanceBorderUP & B01111111;
+    } else {
+      delayFactor += distanceBorderDN & B01111111;
+    }
+
+    if (now < (prevUpdate[stripPos] + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) ) ) ) {
+      return;
+    }
+
+    prevUpdate[stripPos] = now;
+
+    //Serial.print("Alpha breath: "); Serial.println(alpha);
+
+    if (up) {
+      alpha++;
+    } else {
+      alpha--;
+    }
+
+    //INCLUDE TIME FUNCTIONS
+    col.setColorRGB (color);
+    col.setCh_alpha (alpha);
+    colorWipe (col.getRGB(), stripPos);
+
+    if (alpha == BREATH_BORDER_UP) {
+      up = false;
+    }
+    else if (alpha == BREATH_BORDER_DN) {
+      up = true;
+    }
+
+  }
+
 }
 
 void StripHandler::updateEffects () {
-  switch (currentEffect) {
-    case staticCol:
-      break;
-    default:
-      break;
-  }
-}
-
-/*
-//--[[does nothing as of yet,]]-- should get the RGBa data via serial. Whether there is a Raspberry Pi or not changes if this function has to
-//be able to decipher the whole data protocol defined by BCH and SAL, or just the Lights part
-//expects the order R, G, B, alpha
-//still doesn't store the values correctly, something probably goes wrong with the bit shifting
-void StripHandler::getRGBaSerial () {
-  uint32_t colBuffer;     //buffer has to be 32 bit, otherwise it cannot be shifted far enough
-  static uint8_t byteCount = 0;
-
-  for (; Serial.available(); byteCount++) {
-    colBuffer = Serial.read();
-
-    switch (byteCount) {
-      case (chR):                   //Stores the red channel, sets cleanFlag to false, so RGBa doesn't get read in the process
-        cleanFlagRGBa = false;
-        RGBa = 0;
-        RGBa |= colBuffer;
-        break;
-      case (chG):
-        RGBa |= (colBuffer << 8);
-        break;
-      case (chB):
-        RGBa |= (colBuffer << 16);
-        break;
-      case (chAlpha):
-        RGBa |= (colBuffer << 24);
-        byteCount = 0;
-        cleanFlagRGBa = true;
-        break;
-      default:
-        break;
+  if (stripsOn) {
+    for (uint8_t lightGroups = 0; lightGroups < 2; lightGroups++) {
+      switch (currentEffect[lightGroups]) {
+        case staticCol:
+          colorWipe (primaryCol[lightGroups], lightGroups);
+          break;
+        case breathingSlow:
+          currentEffect[lightGroups] = breathingSlow;
+          breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_SLOW);
+          break;
+        default:
+          break;
+      }
     }
   }
 }
-*/
