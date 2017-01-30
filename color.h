@@ -22,6 +22,8 @@ class Color { //stores all needed information for one color and some helper func
     uint8_t getChannel (uint8_t channel, const uint32_t &RGBa); //extracts a color channel out of a RGBa color
     
   public:
+    void setColorRGB (uint32_t color);
+  
     inline void setCh_r (const uint8_t &r) {
       this->r = r;
     }
@@ -34,7 +36,19 @@ class Color { //stores all needed information for one color and some helper func
     inline void setCh_alpha (const uint8_t &alpha) {
       this->alpha = alpha;
     }
-    //void getRGBaSerial(); //reads the serial connection 
+    
+    inline uint8_t getCh_r() {
+      return r;
+    }
+    inline uint8_t getCh_g() {
+      return g;
+    }
+    inline uint8_t getCh_b() {
+      return b;
+    }
+    inline uint8_t getCh_alpha() {
+      return alpha;
+    }
 
     inline uint32_t getRGB () {
       return RGBa_to_RGB (generateRGBa (r, g, b, alpha));
