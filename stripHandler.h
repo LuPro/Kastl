@@ -2,16 +2,24 @@
 #define striphandler_h
 
 #include "Adafruit_NeoPixel.h"
+#include "color.h"
 
 #define NR_STRIPS 3
 #define NR_LEDS_UP 10
-#define DATA_PIN_UP 6
+#define DATA_PIN_UP PD5       //HW Pin 11
 
 #define NR_LEDS_MID 8
-#define DATA_PIN_MID 7
+#define DATA_PIN_MID PD6      //HW Pin 12
 
 #define NR_LEDS_DRAWER 6
-#define DATA_PIN_DRAWER 8
+#define DATA_PIN_DRAWER PD7   //HW Pin 13
+
+#define DELAY_BREATHING_SLOW 80
+#define DELAY_BREATHING_FAST 20
+
+#define BREATH_BORDER_UP 255
+#define BREATH_BORDER_DN 120
+#define BREATH_BORDER_DIFF (BREATH_BORDER_UP - BREATH_BORDER_DN)
 
 enum Effects {
   staticCol,
@@ -32,7 +40,10 @@ enum Strips { //enumeration for the different LED strips
 //colors are comprised of R, G, B and alpha channel
 class StripHandler {
   private:
-    uint8_t currentEffect = staticCol;
+    bool stripsOn = 0;
+    uint8_t currentEffect[2] = {staticCol, staticCol};   //reduce this to 2 effects, since there are only 2 light groups
+    unsigned long long prevUpdate[2] = {0, 0};                   //reduce this to 2 effects, since there are only 2 light groups
+    uint32_t primaryCol[2] = {0, 0};                             //reduce this to 2 effects, since there are only 2 light groups
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       //Still need to test if this is a NEO_RGB, or NEO_GRB. If while testing R and G channel are inverted, choose NEO_GRB.
@@ -49,16 +60,42 @@ class StripHandler {
         strips[pos].show();
       }
     }
-    //this possibly needs more variables when effects get actually implemented (eg: secondary color)
-    StripHandler (const Adafruit_NeoPixel strips[], const uint8_t &curEffect);
-
-    StripHandler operator= (const StripHandler &stripsIn);
     //Strip functions
-    //Currently no effects included in setup function
-    void setup (const uint32_t &color, const uint8_t &strip, const uint8_t &effect);
+    void setup (const uint32_t &color, const uint8_t &group, const uint8_t &effect);
+
+    inline void toggle() {
+      uint32_t col = 0;
+      if (stripsOn) {
+        stripsOn = false;
+      } else {
+        stripsOn = true;
+        col = primaryCol[0];
+      }
+      
+      if (!stripsOn) {
+        colorWipe (col, 0);
+      } else {
+        updateEffects();
+      }
+    }
     
-    void colorWipe (uint32_t color, uint8_t stripPos); //flushes a desired LED strip with a desired RGB color
+    void alphaUp();
+    void alphaDown();
+
+    void cycleEffects (const uint8_t &group, const bool &up);
+    
+    void colorWipe (const uint32_t &color, const uint8_t &stripPos); //flushes a desired LED strip with a desired RGB color
+
+    void breathing (const uint32_t &color, const uint8_t &stripPos, const uint16_t &delayTime);
+    
     void updateEffects();
+
+    void setCurrentEffect() {
+      currentEffect[2] = 1;
+    }
+    uint8_t getCurrentEffect() {
+      return currentEffect[2];
+    }
 };
 
 #endif
