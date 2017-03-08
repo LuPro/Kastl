@@ -1,7 +1,7 @@
 #include "color.h"
 
 //converts RGBa color to RGB color
-uint32_t Color::RGBa_to_RGB (uint32_t RGBa) {
+uint32_t Color::RGBa_to_RGB (const uint32_t &RGBa) const {
   uint32_t val_RGB = 0;
   uint8_t r, g, b, alpha;
 
@@ -27,7 +27,7 @@ uint32_t Color::RGBa_to_RGB (uint32_t RGBa) {
 }
 
 //generates a RGBa color, is only used for debugging purposes, could be used later on for advanced strip effects as a helper function
-uint32_t Color::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t alpha) {
+uint32_t Color::generateRGBa (const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &alpha) const {
   uint32_t RGBa = 0;
 
   //shifts the individual channels on the right position
@@ -42,6 +42,13 @@ uint32_t Color::generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t alpha) {
   return RGBa;
 }
 
+Color Color::operator= (const Color color) {
+  /*this->r = color.getCh_r();
+  this->g = color.getCh_g();
+  this->b = color.getCh_b();
+  this->a = color.getCh_a();*/
+}
+
 void Color::setColorRGB (uint32_t color) {
   r = color & B11111111;
   color = color >> 8;
@@ -53,6 +60,6 @@ void Color::setColorRGB (uint32_t color) {
 }
 
 //returns a desired channel of a RGBa color, use the Channels enum for selection of the channel
-uint8_t Color::getChannel (uint8_t channel, const uint32_t &RGBa) {
+uint8_t Color::getChannel (uint8_t channel, const uint32_t &RGBa) const {
   return (RGBa >> (8 * channel)) & B11111111;
 }

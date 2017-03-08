@@ -63,7 +63,7 @@ void SerialHandler::parseColor (const uint8_t &data) {
       //more colors than one are possible by setting the byte offset back to 1 for a certain effect (eg: breathing with two
       //colors. A helper variable would also be needed which stores how often this got reseted, otherwise there'll be
       //an endless loop.
-      strips->setup (color.getRGB(), group, effect);  //Strip effects currently ignored
+      strips->setup (color, group, effect);
 
       byteOffset = 0; //reset byteOffset
       break;

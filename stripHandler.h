@@ -43,7 +43,7 @@ class StripHandler {
     bool stripsOn = 0;
     uint8_t currentEffect[2] = {staticCol, staticCol};   //reduce this to 2 effects, since there are only 2 light groups
     unsigned long long prevUpdate[2] = {0, 0};                   //reduce this to 2 effects, since there are only 2 light groups
-    uint32_t primaryCol[2] = {0, 0};                             //reduce this to 2 effects, since there are only 2 light groups
+    Color primaryCol[2];                             //reduce this to 2 effects, since there are only 2 light groups
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       //Still need to test if this is a NEO_RGB, or NEO_GRB. If while testing R and G channel are inverted, choose NEO_GRB.
@@ -61,10 +61,12 @@ class StripHandler {
       }
     }
     //Strip functions
-    void setup (const uint32_t &color, const uint8_t &group, const uint8_t &effect);
+    void setup (const Color &color, const uint8_t &group, const uint8_t &effect);
 
     inline void toggle() {
-      uint32_t col = 0;
+      Color col;
+      col.setColorRGB (0);
+      
       if (stripsOn) {
         stripsOn = false;
       } else {
@@ -84,9 +86,9 @@ class StripHandler {
 
     void cycleEffects (const uint8_t &group, const bool &up);
     
-    void colorWipe (const uint32_t &color, const uint8_t &stripPos); //flushes a desired LED strip with a desired RGB color
+    void colorWipe (const Color &color, const uint8_t &stripPos); //flushes a desired LED strip with a desired RGB color
 
-    void breathing (const uint32_t &color, const uint8_t &stripPos, const uint16_t &delayTime);
+    void breathing (const Color &color, const uint8_t &stripPos, const uint16_t &delayTime);
     
     void updateEffects();
 

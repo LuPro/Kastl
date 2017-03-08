@@ -1,10 +1,10 @@
 #include "stripHandler.h"
 
-void StripHandler::setup (const uint32_t &color, const uint8_t &group, const uint8_t &effect) {
+void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_t &effect) {
   switch (effect) {
     case staticCol:
       currentEffect[group] = staticCol;
-      Serial.print("prim col: "); Serial.println(color);
+      Serial.print("prim col: "); Serial.println(color.getRGB());
       Serial.print("group: "); Serial.println(group);
       primaryCol[group] = color;
       colorWipe (color, group);
@@ -22,11 +22,17 @@ void StripHandler::setup (const uint32_t &color, const uint8_t &group, const uin
 }
 
 void StripHandler::alphaUp () {
-
+  uint8_t alpha;
+  alpha = primaryCol[0].getCh_alpha();
+  alpha++;
+  primaryCol[0].setCh_alpha (alpha);
 }
 
 void StripHandler::alphaDown () {
-
+  uint8_t alpha;
+  alpha = primaryCol[0].getCh_alpha();
+  alpha--;
+  primaryCol[0].setCh_alpha (alpha);
 }
 
 void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
@@ -46,7 +52,7 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
 }
 
 //flushes a desired LED strip with a desired RGB color, use Strips enum to choose which strip to use
-void StripHandler::colorWipe (const uint32_t &color, const uint8_t &group) {
+void StripHandler::colorWipe (const Color &color, const uint8_t &group) {
   uint8_t passes = 0;
   uint8_t strip = 0;
 
@@ -59,14 +65,14 @@ void StripHandler::colorWipe (const uint32_t &color, const uint8_t &group) {
 
   for (; strip < passes; strip++) {
     for (uint8_t i = 0; i < strips[strip].numPixels(); i++) { //iterates through every pixel of the LED strip
-      strips[strip].setPixelColor (i, color);
+      strips[strip].setPixelColor (i, color.getRGB());
     }
     strips[strip].show(); //shows the LED strip. Internal function of the Adafruit_Neopixel library. Is used to actually apply the color info
   }
 }
 
 //effects need to use a seperate alpha channel for global brightness adjustments to work - IMPLEMENT THIS!!!
-void StripHandler::breathing (const uint32_t &color, const uint8_t &group, const uint16_t &delayTime) {
+void StripHandler::breathing (const Color &color, const uint8_t &group, const uint16_t &delayTime) {
   static Color col;
   static uint8_t alpha = 0;
   static bool up = false;
@@ -115,9 +121,9 @@ void StripHandler::breathing (const uint32_t &color, const uint8_t &group, const
     }
 
     //INCLUDE TIME FUNCTIONS
-    col.setColorRGB (color);
+    col = color;
     col.setCh_alpha (alpha);
-    colorWipe (col.getRGB(), stripPos);
+    colorWipe (col, stripPos);
 
     if (alpha == BREATH_BORDER_UP) {
       up = false;
@@ -138,8 +144,10 @@ void StripHandler::updateEffects () {
           colorWipe (primaryCol[lightGroups], lightGroups);
           break;
         case breathingSlow:
-          currentEffect[lightGroups] = breathingSlow;
           breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_SLOW);
+          break;
+        case breathingFast:
+          breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_FAST);
           break;
         default:
           break;

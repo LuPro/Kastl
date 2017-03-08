@@ -17,11 +17,13 @@ class Color { //stores all needed information for one color and some helper func
     uint8_t b;
     uint8_t alpha;
 
-    uint32_t RGBa_to_RGB (uint32_t RGBa);
-    uint32_t generateRGBa (uint8_t r, uint8_t g, uint8_t b, uint8_t alpha);
-    uint8_t getChannel (uint8_t channel, const uint32_t &RGBa); //extracts a color channel out of a RGBa color
+    uint32_t RGBa_to_RGB (const uint32_t &RGBa) const;
+    uint32_t generateRGBa (const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &alpha) const;
+    uint8_t getChannel (uint8_t channel, const uint32_t &RGBa) const; //extracts a color channel out of a RGBa color
     
   public:
+    Color operator= (const Color color);
+  
     void setColorRGB (uint32_t color);
   
     inline void setCh_r (const uint8_t &r) {
@@ -37,20 +39,20 @@ class Color { //stores all needed information for one color and some helper func
       this->alpha = alpha;
     }
     
-    inline uint8_t getCh_r() {
+    inline uint8_t getCh_r() const {
       return r;
     }
-    inline uint8_t getCh_g() {
+    inline uint8_t getCh_g() const {
       return g;
     }
-    inline uint8_t getCh_b() {
+    inline uint8_t getCh_b() const {
       return b;
     }
-    inline uint8_t getCh_alpha() {
+    inline uint8_t getCh_alpha() const {
       return alpha;
     }
 
-    inline uint32_t getRGB () {
+    inline uint32_t getRGB () const {
       return RGBa_to_RGB (generateRGBa (r, g, b, alpha));
     }
 };
