@@ -106,11 +106,10 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
       delayFactor += distanceBorderDN & B01111111;
     }
 
-    if (now < (prevUpdate[stripPos] + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) ) ) ) {
+    if (now < nextUpdate[group]) {
+      nextUpdate[group] = now + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) );
       return;
     }
-
-    prevUpdate[stripPos] = now;
 
     //Serial.print("Alpha breath: "); Serial.println(alpha);
 
@@ -120,7 +119,6 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
       alpha--;
     }
 
-    //INCLUDE TIME FUNCTIONS
     col = color;
     col.setCh_alpha (alpha);
     colorWipe (col, stripPos);

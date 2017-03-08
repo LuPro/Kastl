@@ -41,9 +41,9 @@ enum Strips { //enumeration for the different LED strips
 class StripHandler {
   private:
     bool stripsOn = 0;
-    uint8_t currentEffect[2] = {staticCol, staticCol};   //reduce this to 2 effects, since there are only 2 light groups
-    unsigned long long prevUpdate[2] = {0, 0};                   //reduce this to 2 effects, since there are only 2 light groups
-    Color primaryCol[2];                             //reduce this to 2 effects, since there are only 2 light groups
+    uint8_t currentEffect[2] = {staticCol, staticCol};
+    unsigned long long nextUpdate[2] = {0, 0};
+    Color primaryCol[2];
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       //Still need to test if this is a NEO_RGB, or NEO_GRB. If while testing R and G channel are inverted, choose NEO_GRB.
