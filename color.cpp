@@ -5,7 +5,7 @@ Color::Color () {
 }
 
 Color::Color (const uint8_t &setting = 0) {
-  switch (mode) {
+  switch (setting) {
     case 42:
       r = g = b = alpha = 255;
       break;
@@ -58,10 +58,10 @@ uint32_t Color::generateRGBa (const uint8_t &r, const uint8_t &g, const uint8_t 
 }
 
 Color Color::operator= (const Color color) {
-  /*this->r = color.getCh_r();
+  this->r = color.getCh_r();
   this->g = color.getCh_g();
   this->b = color.getCh_b();
-  this->a = color.getCh_a();*/
+  this->alpha = color.getCh_alpha();
 }
 
 void Color::setColorRGB (uint32_t color) {

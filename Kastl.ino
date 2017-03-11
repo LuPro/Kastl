@@ -2,6 +2,7 @@
 #include "color.h"
 #include "serialHandler.h"
 #include "gestureHandler.h"
+#include "alarmHandler.h"
 
 GestureHandler gboard;
 
@@ -59,8 +60,9 @@ void setup() {
 }
 
 void loop() {
+  static AlarmHandler alarms;
   static StripHandler strips;            //contains all strips and the needed information for them
-  static SerialHandler serial (strips);
+  static SerialHandler serial (strips, alarms);
 
   if (gboard.gC_isClean()) {
     switch (gboard.getGestureCode()) {
