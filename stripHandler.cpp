@@ -51,8 +51,8 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
     } else {
       currentEffect[group]--;
     }
-    currentEffect[group] %= 7;
-    //currentEffect[group] %= 2;    //only for debugging
+    //currentEffect[group] %= 7;
+    currentEffect[group] %= 3;    //only for debugging
     Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
     toggle();
