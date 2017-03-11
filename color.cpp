@@ -4,7 +4,7 @@ Color::Color () {
   
 }
 
-Color::Color (const uint8_t &mode = 0) {
+Color::Color (const uint8_t &setting = 0) {
   switch (mode) {
     case 42:
       r = g = b = alpha = 255;
