@@ -1,5 +1,20 @@
 #include "color.h"
 
+Color::Color () {
+  
+}
+
+Color::Color (const uint8_t &mode = 0) {
+  switch (mode) {
+    case 42:
+      r = g = b = alpha = 255;
+      break;
+    default:
+      r = g = b = alpha = 0;
+      break;
+  }
+}
+
 //converts RGBa color to RGB color
 uint32_t Color::RGBa_to_RGB (const uint32_t &RGBa) const {
   uint32_t val_RGB = 0;

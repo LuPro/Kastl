@@ -4,8 +4,6 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
   switch (effect) {
     case staticCol:
       currentEffect[group] = staticCol;
-      Serial.print("prim col: "); Serial.println(color.getRGB());
-      Serial.print("group: "); Serial.println(group);
       primaryCol[group] = color;
       colorWipe (color, group);
       stripsOn = true;
@@ -21,17 +19,28 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
   }
 }
 
+//reduce alphaUp and alphaDown alpha changes, but increase frequency in gesture board settings
 void StripHandler::alphaUp () {
+  Serial.println("alphaUp");
   uint8_t alpha;
   alpha = primaryCol[0].getCh_alpha();
-  alpha++;
+  if (alpha > 250) {
+    alpha = 255;
+  } else {
+    alpha += 5;
+  }
   primaryCol[0].setCh_alpha (alpha);
 }
 
 void StripHandler::alphaDown () {
+  Serial.println("alphaDown");
   uint8_t alpha;
   alpha = primaryCol[0].getCh_alpha();
-  alpha--;
+  if (alpha < 25) {
+    alpha = 20;
+  } else {
+    alpha -= 5;
+  }
   primaryCol[0].setCh_alpha (alpha);
 }
 

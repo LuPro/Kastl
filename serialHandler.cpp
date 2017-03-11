@@ -38,27 +38,27 @@ void SerialHandler::parseColor (const uint8_t &data) {
       if (group == 2) {
         group = 0;
       }
-      //Serial.print("Group: "); Serial.println(group);
-      //Serial.print("Effect: "); Serial.println(effect);
+      Serial.print("Group: "); Serial.println(group);
+      Serial.print("Effect: "); Serial.println(effect);
       break;
     case 1:
       color.setCh_r (data);
       byteOffset++;
-      //Serial.print("Red: "); Serial.println(data);
+      Serial.print("Red: "); Serial.println(data);
       break;
     case 2:
       color.setCh_g (data);
       byteOffset++;
-      //Serial.print("Green: "); Serial.println(data);
+      Serial.print("Green: "); Serial.println(data);
       break;
     case 3:
       color.setCh_b (data);
       byteOffset++;
-      //Serial.print("Blue: "); Serial.println(data);
+      Serial.print("Blue: "); Serial.println(data);
       break;
     case 4:
       color.setCh_alpha (data);
-      //Serial.print("Alpha: "); Serial.println(data);
+      Serial.print("Alpha: "); Serial.println(data);
 
       //more colors than one are possible by setting the byte offset back to 1 for a certain effect (eg: breathing with two
       //colors. A helper variable would also be needed which stores how often this got reseted, otherwise there'll be

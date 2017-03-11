@@ -22,6 +22,9 @@ class Color { //stores all needed information for one color and some helper func
     uint8_t getChannel (uint8_t channel, const uint32_t &RGBa) const; //extracts a color channel out of a RGBa color
     
   public:
+    Color ();
+    Color (const uint8_t &mode);
+  
     Color operator= (const Color color);
   
     void setColorRGB (uint32_t color);
