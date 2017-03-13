@@ -67,41 +67,25 @@ void loop() {
   if (gboard.gC_isClean()) {
     switch (gboard.getGestureCode()) {
       case fWE:
-<<<<<<< HEAD
-        Serial.println("toggled");
-=======
         Serial.println("WE, toggled");
->>>>>>> 511da897beaa5e2b0f107019c59817f81880ba1d
         strips.toggle();
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fEW:
-<<<<<<< HEAD
-        Serial.println("toggled");
-=======
         Serial.println("EW, toggled");
->>>>>>> 511da897beaa5e2b0f107019c59817f81880ba1d
         strips.toggle();
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fSN:
-<<<<<<< HEAD
-        Serial.println("effects");
-=======
         Serial.println("SN, effects");
->>>>>>> 511da897beaa5e2b0f107019c59817f81880ba1d
         strips.cycleEffects(0, true);
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fNS:
-<<<<<<< HEAD
-        Serial.println("effects");
-=======
         Serial.println("NS, effects");
->>>>>>> 511da897beaa5e2b0f107019c59817f81880ba1d
         strips.cycleEffects(0, false);
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
