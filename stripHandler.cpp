@@ -4,8 +4,6 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
   switch (effect) {
     case staticCol:
       currentEffect[group] = staticCol;
-      Serial.print("prim col: "); Serial.println(color.getRGB());
-      Serial.print("group: "); Serial.println(group);
       primaryCol[group] = color;
       colorWipe (color, group);
       stripsOn = true;
@@ -21,19 +19,30 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
   }
 }
 
+//reduce alphaUp and alphaDown alpha changes, but increase frequency in gesture board settings
 void StripHandler::alphaUp () {
+  Serial.println("alphaUp");
   uint8_t alpha;
   Serial.println("Alpha Up");
   alpha = primaryCol[0].getCh_alpha();
-  alpha++;
+  if (alpha > 250) {
+    alpha = 255;
+  } else {
+    alpha += 5;
+  }
   primaryCol[0].setCh_alpha (alpha);
 }
 
 void StripHandler::alphaDown () {
+  Serial.println("alphaDown");
   uint8_t alpha;
   Serial.println("Alpha Down");
   alpha = primaryCol[0].getCh_alpha();
-  alpha--;
+  if (alpha < 25) {
+    alpha = 20;
+  } else {
+    alpha -= 5;
+  }
   primaryCol[0].setCh_alpha (alpha);
 }
 
@@ -45,7 +54,7 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
       currentEffect[group]--;
     }
     //currentEffect[group] %= 7;
-    currentEffect[group] %= 2;    //only for debugging
+    currentEffect[group] %= 3;    //only for debugging
     Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
     toggle();
@@ -89,6 +98,11 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
   unsigned long long now = 0;
   now = millis();
 
+  if (now < nextUpdate[group]) {
+    return;
+  }
+  nextUpdate[group] = now + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) );
+
   if (group == 0) {
     passes = 2;
   } else {
@@ -108,11 +122,6 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
       delayFactor += distanceBorderDN & B01111111;
     }
 
-    if (now < nextUpdate[group]) {
-      nextUpdate[group] = now + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) );
-      return;
-    }
-
     //Serial.print("Alpha breath: "); Serial.println(alpha);
 
     if (up) {
@@ -122,7 +131,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
     }
 
     col = color;
-    col.setCh_alpha (alpha);
+    col.setCh_alpha ( (alpha / 255.0) * color.getCh_alpha());
     colorWipe (col, stripPos);
 
     if (alpha == BREATH_BORDER_UP) {
@@ -133,7 +142,6 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
     }
 
   }
-
 }
 
 void StripHandler::updateEffects () {

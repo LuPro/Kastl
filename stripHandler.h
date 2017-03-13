@@ -18,7 +18,7 @@
 #define DELAY_BREATHING_FAST 20
 
 #define BREATH_BORDER_UP 255
-#define BREATH_BORDER_DN 120
+#define BREATH_BORDER_DN 80
 #define BREATH_BORDER_DIFF (BREATH_BORDER_UP - BREATH_BORDER_DN)
 
 enum Effects {
@@ -43,7 +43,7 @@ class StripHandler {
     bool stripsOn = 0;
     uint8_t currentEffect[2] = {staticCol, staticCol};
     unsigned long long nextUpdate[2] = {0, 0};
-    Color primaryCol[2];
+    Color primaryCol[2] = {Color(42), Color(42)};
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       //Still need to test if this is a NEO_RGB, or NEO_GRB. If while testing R and G channel are inverted, choose NEO_GRB.
