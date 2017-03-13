@@ -23,6 +23,7 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
 
 void StripHandler::alphaUp () {
   uint8_t alpha;
+  Serial.println("Alpha Up");
   alpha = primaryCol[0].getCh_alpha();
   alpha++;
   primaryCol[0].setCh_alpha (alpha);
@@ -30,6 +31,7 @@ void StripHandler::alphaUp () {
 
 void StripHandler::alphaDown () {
   uint8_t alpha;
+  Serial.println("Alpha Down");
   alpha = primaryCol[0].getCh_alpha();
   alpha--;
   primaryCol[0].setCh_alpha (alpha);

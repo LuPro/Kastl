@@ -53,21 +53,25 @@ void loop() {
   if (gboard.gC_isClean()) {
     switch (gboard.getGestureCode()) {
       case fWE:
+        Serial.println("toggled");
         strips.toggle();
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fEW:
+        Serial.println("toggled");
         strips.toggle();
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fSN:
+        Serial.println("effects");
         strips.cycleEffects(0, true);
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fNS:
+        Serial.println("effects");
         strips.cycleEffects(0, false);
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
