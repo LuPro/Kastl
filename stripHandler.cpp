@@ -14,6 +14,12 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
       breathing (color, group, DELAY_BREATHING_SLOW);
       stripsOn = true;
       break;
+    case breathingFast:
+      currentEffect[group] = breathingFast;
+      primaryCol[group] = color;
+      breathing (color, group, DELAY_BREATHING_FAST);
+      stripsOn = true;
+      break;
     default:
       break;
   }
