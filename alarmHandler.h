@@ -17,7 +17,7 @@ enum DayOfWeek {
 class AlarmHandler {
   private:
     //make as many alarms as possible with RAM (at the end of the project)
-    Alarm alarms[8];
+    Alarm alarms[10];
     
     void deleteAlarm (const uint8_t &index);
     
