@@ -20,6 +20,9 @@ void SerialHandler::poll () {
       case alarm:
         parseAlarm (inData);
         break;
+      case rtcTime:
+        parseTime (inData);
+        break;
       default:
         break;
     }
@@ -38,27 +41,27 @@ void SerialHandler::parseColor (const uint8_t &data) {
       if (group == 2) {
         group = 0;
       }
-      Serial.print("Group: "); Serial.println(group);
-      Serial.print("Effect: "); Serial.println(effect);
+      //Serial.print("Group: "); Serial.println(group);
+      //Serial.print("Effect: "); Serial.println(effect);
       break;
     case 1:
       color.setCh_r (data);
       byteOffset++;
-      Serial.print("Red: "); Serial.println(data);
+      //Serial.print("Red: "); Serial.println(data);
       break;
     case 2:
       color.setCh_g (data);
       byteOffset++;
-      Serial.print("Green: "); Serial.println(data);
+      //Serial.print("Green: "); Serial.println(data);
       break;
     case 3:
       color.setCh_b (data);
       byteOffset++;
-      Serial.print("Blue: "); Serial.println(data);
+      //Serial.print("Blue: "); Serial.println(data);
       break;
     case 4:
       color.setCh_alpha (data);
-      Serial.print("Alpha: "); Serial.println(data);
+      //Serial.print("Alpha: "); Serial.println(data);
 
       //more colors than one are possible by setting the byte offset back to 1 for a certain effect (eg: breathing with two
       //colors. A helper variable would also be needed which stores how often this got reseted, otherwise there'll be
@@ -73,5 +76,86 @@ void SerialHandler::parseColor (const uint8_t &data) {
 }
 
 void SerialHandler::parseAlarm (const uint8_t &data) {
+  static uint8_t sound = 0, volume = 0, snoozeTime = 0;
+  static uint8_t action = 0;
+  static uint8_t doW = 0, h = 0, m = 0;
 
+  switch (byteOffset) {
+    case 0:
+      sound = (data & B00111110) >> 1;
+      doW = (data & B00000001) << 6;
+      byteOffset++;
+      break;
+    case 1:
+      doW |= (data & B11111100) >> 2;
+      action = data & B00000011;
+      byteOffset++;
+      break;
+    case 2:
+      snoozeTime = (data & B11111000) >> 3;
+      h = (data & B00000111) << 2;
+      byteOffset++;
+      break;
+    case 3:
+      h |= (data & B11000000) >> 6;
+      m = data & B00111111;
+      byteOffset++;
+      break;
+    case 4:
+      volume = data;
+
+      switch (action) {
+        case set:
+          alarms->setAlarm (Alarm(doW, h, m, true, sound, volume, snoozeTime));
+          break;
+        case edit:
+          //edit can also delete (?)
+          break;
+        case deleteAll:
+          alarms->deleteAllAlarms();
+          break;
+        default:
+          break;
+      }
+      byteOffset = 0;
+      break;
+    default:
+      break;  
+  }
 }
+
+void SerialHandler::parseTime (const uint8_t &data) {
+  static uint8_t s, m, h, doW, doM, mon, y;
+  
+  switch (byteOffset) {
+    case 0:
+      s = data & B00111111;
+      byteOffset++;
+      break;
+    case 1:
+      m = data & B00111111;
+      byteOffset++;
+      break;
+    case 2:
+      h = (data & B11111000) >> 3;
+      doW = data & B00000111;
+      byteOffset++;
+      break;
+    case 3:
+      doM = (data & B11111000) >> 3;
+      mon = (data & B00000111) << 1;
+      byteOffset++;
+      break;
+    case 4:
+      mon |= (data & B10000000) >> 7;
+      y = data & B01111111;
+
+      //ToDo: doW can't be saved, add this yourself so alarms can work properly
+      rtc->adjust (DateTime (y, mon, doM, h, m, s));
+      byteOffset = 0;
+      break;
+  }
+}
+
+
+

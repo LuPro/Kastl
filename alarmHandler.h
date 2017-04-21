@@ -18,7 +18,14 @@ class AlarmHandler {
   private:
     //make as many alarms as possible with RAM (at the end of the project)
     Alarm alarms[8];
+    
+    void deleteAlarm (const uint8_t &index);
+    
   public:
+    void setAlarm (const Alarm &newAlarm);
+    void editAlarm (const Alarm &alarmToEdit, const Alarm &newAlarm);
+    void deleteAlarm (const Alarm &alarm);  //currently unused
+    void deleteAllAlarms();
 };
 
 #endif //alarmhandler_h
