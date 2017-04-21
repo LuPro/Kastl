@@ -1,6 +1,8 @@
 #ifndef alarmhandler_h
 #define alarmhandler_h
 
+#include "alarm.h"
+
 //does this need to be here?
 enum DayOfWeek {
   Monday,
@@ -14,7 +16,8 @@ enum DayOfWeek {
 
 class AlarmHandler {
   private:
-
+    //make as many alarms as possible with RAM (at the end of the project)
+    Alarm alarms[8];
   public:
 };
 

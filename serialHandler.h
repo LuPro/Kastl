@@ -4,6 +4,7 @@
 #include "color.h"
 #include "stripHandler.h"
 #include "alarmHandler.h"
+#include "RTClib.h"
 #include "Arduino.h"
 
 enum Modes {
@@ -18,14 +19,16 @@ class SerialHandler {
 
     AlarmHandler *alarms;
     StripHandler *strips;
+    RTC_DS3231 *rtc;
     
     void parseColor (const uint8_t &data);
     void parseAlarm (const uint8_t &data);
     
   public:
-    inline SerialHandler (StripHandler &strips, AlarmHandler &alarms) {
+    inline SerialHandler (StripHandler &strips, AlarmHandler &alarms, RTC_DS3231 &rtc) {
       this->strips = &strips;
       this->alarms = &alarms;
+      this->rtc = &rtc;
     }
     void poll();
 };

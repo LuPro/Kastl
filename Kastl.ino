@@ -3,8 +3,13 @@
 #include "serialHandler.h"
 #include "gestureHandler.h"
 #include "alarmHandler.h"
+#include "timeHandler.h"
+#include "RTClib.h"
+
+#define DS3231_I2C_ADDRESS 104
 
 GestureHandler gboard;
+RTC_DS3231 rtc;
 
 volatile bool brightnessChange = false;
 volatile bool brightnessUp = false;
@@ -17,9 +22,18 @@ enum Gestures {
 };
 
 void setup() {
-  Serial.begin(9600);
-
   //ToDo: Initialize all pins according to Meschik's rules!!!
+  
+  Serial.begin(9600);
+  
+  if (!rtc.begin()) {
+    //Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  
+  if (rtc.lostPower()) {
+    //Maybe a sound warning signal that indicates that the module has a wrong time (only if it is deactivatable)
+  }
 
   //Serial.println("Initializing Timer2");
   //turn TMR2 completely off
@@ -62,7 +76,7 @@ void setup() {
 void loop() {
   static AlarmHandler alarms;
   static StripHandler strips;            //contains all strips and the needed information for them
-  static SerialHandler serial (strips, alarms);
+  static SerialHandler serial (strips, alarms, rtc);
 
   if (gboard.gC_isClean()) {
     switch (gboard.getGestureCode()) {
