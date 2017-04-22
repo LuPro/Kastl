@@ -19,13 +19,17 @@ Alarm::Alarm (const uint8_t &activeDays, const uint8_t &h, const uint8_t &m, con
   this->snoozeTime = snoozeTime;
 }
 
-Alarm Alarm::operator= (const Alarm alarm) {
+Alarm Alarm::operator= (const Alarm &alarm) {
   this->hour = alarm.hour;
   this->minute = alarm.minute;
   this->activeDays = alarm.activeDays;
   this->sound = alarm.sound;
   this->volume = alarm.volume;
   this->snoozeTime = alarm.snoozeTime;
+}
+
+bool Alarm::operator== (const Alarm &alarm) {
+  return (hour == alarm.hour) && (minute == alarm.minute) && (activeDays == alarm.activeDays) && (sound == alarm.sound) && (volume == alarm.volume) && (snoozeTime == alarm.snoozeTime);
 }
 
 uint8_t Alarm::getAlarmMinute () {

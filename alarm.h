@@ -30,7 +30,8 @@ class Alarm : Time {
     Alarm();
     Alarm(const uint8_t &activeDays, const uint8_t &h, const uint8_t &m, const bool &active, const uint8_t &sound, const uint8_t &volume, const uint8_t &snoozeTime);
 
-    Alarm operator= (const Alarm alarm);
+    Alarm operator= (const Alarm &alarm);
+    bool operator== (const Alarm &alarm);
 
     uint8_t getAlarmMinute();
     uint8_t getAlarmHour();

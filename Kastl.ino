@@ -3,7 +3,6 @@
 #include "serialHandler.h"
 #include "gestureHandler.h"
 #include "alarmHandler.h"
-#include "timeHandler.h"
 #include "RTClib.h"
 
 #define DS3231_I2C_ADDRESS 104
