@@ -65,10 +65,9 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
   } else {
     toggle();
   }
-
 }
 
-//flushes a desired LED strip with a desired RGB color, use Strips enum to choose which strip to use
+//flushes a desired LED group with a desired RGB color, use Strips enum to choose which strip to use
 void StripHandler::colorWipe (const Color &color, const uint8_t &group) {
   uint8_t passes = 0;
   uint8_t strip = 0;
@@ -88,7 +87,6 @@ void StripHandler::colorWipe (const Color &color, const uint8_t &group) {
   }
 }
 
-//effects need to use a seperate alpha channel for global brightness adjustments to work - IMPLEMENT THIS!!!
 void StripHandler::breathing (const Color &color, const uint8_t &group, const uint16_t &delayTime) {
   static Color col;
   static uint8_t alpha = 0;
@@ -146,7 +144,6 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
     else if (alpha == BREATH_BORDER_DN) {
       up = true;
     }
-
   }
 }
 
