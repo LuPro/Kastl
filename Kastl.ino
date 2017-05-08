@@ -7,6 +7,11 @@
 
 #define DS3231_I2C_ADDRESS 104
 
+//sound in Hz
+#define LOW_PITCH 2500
+#define MID_PITCH 3000
+#define HIGH_PITCH 4000
+
 GestureHandler gboard;
 RTC_DS3231 rtc;
 
