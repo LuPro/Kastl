@@ -32,6 +32,10 @@ class GestureHandler {
       return gestureCode;
     }
 
+    void pollGesturePins ();
+
+    void saveGestureCode();
+
     void setGestureBit (const uint8_t &pin);
 
     void triggerTMR();

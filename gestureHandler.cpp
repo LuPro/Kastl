@@ -1,5 +1,25 @@
 #include "gestureHandler.h"
 
+//This function just reads in the gesture board data pins, it does not interpret them or anythingg
+void GestureHandler::pollGesturePins () {
+    static uint8_t oldPinStatus = 0;
+    uint8_t pinStatus = 0;
+
+    pinStatus = PIND4;
+    pinStatus |= (PINC0 << 1);
+    pinStatus |= (PINB0 << 2);
+
+    if (pinStatus != oldPinStatus) {
+      oldPinStatus = pinStatus;
+      gestureCode += oldPinStatus ^ pinStatus;
+      triggerTMR();   //ATTENTION: This probably doesn't do the right thing (as the ISR for TMR2 OVFL has wrong logic for this) - only change the ISR if the old method is confirmed to be wonky
+    }
+}
+
+void GestureHandler::saveGestureCode () {
+  
+}
+
 void GestureHandler::setGestureBit (const uint8_t &pin) {
   //Serial.print("set Bit: "); Serial.println(pin);
   gestureCode |= (1 << pin);
@@ -7,6 +27,8 @@ void GestureHandler::setGestureBit (const uint8_t &pin) {
   triggerTMR();
 }
 
+//Could possibly be problematic, because I'm unsure whether ATmega queues the interrupts or just forgets everything
+//ToDo: Either test this, or poll the status of the pins
 void GestureHandler::triggerTMR () {
   //set clocksource to prescaled clock (prescaler: 1024)
   TCCR2B = B00000111;

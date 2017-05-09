@@ -9,7 +9,7 @@ class SoundHandler {
   private:
     
   public:
-    void playAlarm (const uint8_t &volume, const uint16_t &frequency, const uint16_t &duration);
+    void playAlarm (const float &volume, const uint16_t &frequency, const uint16_t &baseDuration);
 };
 
 #endif //soundhandler_h

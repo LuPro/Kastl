@@ -137,6 +137,9 @@ ISR (TIMER2_OVF_vect) {
   TCNT2 = 0;
   //reset TMR2 interrupt flag
   TIFR2 = B00000000;
+  /*
+  gboard.saveGestureCode();
+  */
   gboard.set_cleanFlag_gC (true);
 }
 
