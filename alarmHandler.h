@@ -2,6 +2,7 @@
 #define alarmhandler_h
 
 #include "alarm.h"
+#include "RTClib.h"
 
 #define NR_ALARMS 20
 
@@ -15,9 +16,11 @@ class AlarmHandler {
     AlarmHandler();
   
     void setAlarm (const Alarm &newAlarm);
-    void editAlarm (const Alarm &alarmToEdit, const Alarm &newAlarm);
-    void deleteAlarm (const Alarm &alarm);  //currently unused
+    void editAlarm (const Alarm &alarmToEdit, const Alarm &newAlarm);   //ToDo: Work out whether or not this is really needed (Does the dataprotocoll leave any use cases for it?
+    void deleteAlarm (const Alarm &alarm);
     void deleteAllAlarms();
+
+    bool checkForAlarm (const DateTime &timeNow);
 };
 
 #endif //alarmhandler_h

@@ -40,6 +40,7 @@ uint8_t Alarm::getAlarmHour () {
   return hour;
 }
 
+//returns the number of days until the alarm goes off
 uint8_t Alarm::getNextDay (const uint8_t &currentDay) {
   uint8_t i;
   for (i = currentDay; i < 7; i++) {
@@ -47,7 +48,7 @@ uint8_t Alarm::getNextDay (const uint8_t &currentDay) {
       return i;
     }
   }
-  for (i = currentDay; i; i--) {
+  for (i = 0; i < 7; i++) {
     if (activeDays & (1 << i)) {
       return i;
     }

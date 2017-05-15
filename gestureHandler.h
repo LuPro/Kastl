@@ -11,8 +11,6 @@ class GestureHandler {
      * flick EW: 010
      * flick SN: 011
      * flick NS: 100
-     * stouch:   101
-     * dtouch:   110
      */
     uint8_t gestureCode = 0;
     bool cleanFlag_gC = 0;
@@ -33,8 +31,6 @@ class GestureHandler {
     }
 
     void pollGesturePins ();
-
-    void saveGestureCode();
 
     void setGestureBit (const uint8_t &pin);
 

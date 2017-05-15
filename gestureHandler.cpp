@@ -12,12 +12,8 @@ void GestureHandler::pollGesturePins () {
     if (pinStatus != oldPinStatus) {
       oldPinStatus = pinStatus;
       gestureCode += oldPinStatus ^ pinStatus;
-      triggerTMR();   //ATTENTION: This probably doesn't do the right thing (as the ISR for TMR2 OVFL has wrong logic for this) - only change the ISR if the old method is confirmed to be wonky
+      triggerTMR();
     }
-}
-
-void GestureHandler::saveGestureCode () {
-  
 }
 
 void GestureHandler::setGestureBit (const uint8_t &pin) {

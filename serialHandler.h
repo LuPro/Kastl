@@ -16,9 +16,10 @@ enum Modes {
 };
 
 enum AlarmActions {
-  set,
+  create,
   edit,
-  deleteAll
+  deleteAlarm,
+  clearAll
 };
 
 class SerialHandler {
@@ -26,6 +27,7 @@ class SerialHandler {
     uint8_t byteOffset = 0; //keeps track of how many bytes got read since the status byte
     uint8_t mode = 0;       //stores the mode (light, alarm)
 
+    //pointers to every other class the serialHandler gets information about so it can pass this information
     AlarmHandler *alarms;
     StripHandler *strips;
     RTC_DS3231 *rtc;

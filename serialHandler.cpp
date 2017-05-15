@@ -63,9 +63,6 @@ void SerialHandler::parseColor (const uint8_t &data) {
       color.setCh_alpha (data);
       //Serial.print("Alpha: "); Serial.println(data);
 
-      //more colors than one are possible by setting the byte offset back to 1 for a certain effect (eg: breathing with two
-      //colors. A helper variable would also be needed which stores how often this got reseted, otherwise there'll be
-      //an endless loop.
       strips->setup (color, group, effect);
 
       byteOffset = 0; //reset byteOffset
@@ -105,13 +102,17 @@ void SerialHandler::parseAlarm (const uint8_t &data) {
       volume = data;
 
       switch (action) {
-        case set:
+        case create:
           alarms->setAlarm (Alarm(doW, h, m, true, sound, volume, snoozeTime));
           break;
         case edit:
+          //probably not needed, look at alarmHandler.h for more information
           //edit can also delete (?)
           break;
-        case deleteAll:
+        case deleteAlarm:
+          alarms->deleteAlarm ( Alarm(doW, h, m, true, sound, volume, snoozeTime) );
+          break;
+        case clearAll:
           alarms->deleteAllAlarms();
           break;
         default:

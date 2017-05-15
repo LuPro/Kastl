@@ -2,7 +2,6 @@
 #define alarm_h
 
 #include "time.h"
-//#include "RTClib.h"
 
 #include "Arduino.h"
 
@@ -27,7 +26,7 @@ class Alarm : Time {
     uint8_t snoozeTime = 0; //in minutes. Maybe make another default value (such as 5 min?)
 
   public:
-    Alarm();
+    Alarm();    //"default" constructor shouldn't really be used, is included because of various rewrites
     Alarm(const uint8_t &activeDays, const uint8_t &h, const uint8_t &m, const bool &active, const uint8_t &sound, const uint8_t &volume, const uint8_t &snoozeTime);
 
     Alarm operator= (const Alarm &alarm);
@@ -36,6 +35,8 @@ class Alarm : Time {
     uint8_t getAlarmMinute();
     uint8_t getAlarmHour();
     uint8_t getNextDay (const uint8_t &currentDay);
+
+    //fetches the sctiveFlag that's nested inside the activeDays variable
     inline bool isActive() {
       return (activeDays & B10000000) == true;
     }

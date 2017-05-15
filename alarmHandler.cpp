@@ -41,3 +41,16 @@ void AlarmHandler::deleteAllAlarms () {
   }
 }
 
+bool AlarmHandler::checkForAlarm (const DateTime &timeNow) {
+  uint8_t nextDay = 0;
+  for (uint8_t i = 0; i < NR_ALARMS; i++) {
+    nextDay = alarms[i].getNextDay (timeNow.dayOfTheWeek());
+    if (!nextDay) {
+      if (alarms[i].getAlarmHour() == timeNow.hour() && alarms[i].getAlarmMinute() == timeNow.minute()) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+

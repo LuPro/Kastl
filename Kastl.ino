@@ -3,6 +3,7 @@
 #include "serialHandler.h"
 #include "gestureHandler.h"
 #include "alarmHandler.h"
+#include "soundHandler.h"
 #include "RTClib.h"
 
 #define DS3231_I2C_ADDRESS 104
@@ -27,14 +28,14 @@ enum Gestures {
 
 void setup() {
   //ToDo: Initialize all pins according to Meschik's rules!!!
-  
+
   Serial.begin(9600);
-  
+
   if (!rtc.begin()) {
     //Serial.println("Couldn't find RTC");
     while (1);
   }
-  
+
   if (rtc.lostPower()) {
     //Maybe a sound warning signal that indicates that the module has a wrong time (only if it is deactivatable)
   }
@@ -78,8 +79,9 @@ void setup() {
 }
 
 void loop() {
+  static SoundHandler buzzer;
   static AlarmHandler alarms;
-  static StripHandler strips;            //contains all strips and the needed information for them
+  static StripHandler strips;
   static SerialHandler serial (strips, alarms, rtc);
 
   if (gboard.gC_isClean()) {
@@ -112,7 +114,7 @@ void loop() {
         break;
     }
   }
-  
+
   if (brightnessChange) {
     Serial.println("brightness change!");
     brightnessChange = false;
@@ -123,6 +125,12 @@ void loop() {
     }
   }
 
+  //polling information and effect updates
+  //gboard.pollGesturePins();   //this is needed if the method with interrupts is known to not work
+  //change this, so that alarmHandler does actually handle all of the alarm (playAlarm() should be used inside alarmHandler. Change function name to pollAlarms() or something like that
+  if (alarms.checkForAlarm (rtc.now())) {
+    buzzer.playAlarms();
+  }
   serial.poll();
   strips.updateEffects();
 }
@@ -137,9 +145,6 @@ ISR (TIMER2_OVF_vect) {
   TCNT2 = 0;
   //reset TMR2 interrupt flag
   TIFR2 = B00000000;
-  /*
-  gboard.saveGestureCode();
-  */
   gboard.set_cleanFlag_gC (true);
 }
 

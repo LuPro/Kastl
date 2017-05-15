@@ -9,6 +9,7 @@ class SoundHandler {
   private:
     
   public:
+    //change volume from float 0-1 to int 0-255
     void playAlarm (const float &volume, const uint16_t &frequency, const uint16_t &baseDuration);
 };
 
