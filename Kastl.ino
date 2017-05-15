@@ -128,7 +128,7 @@ void loop() {
   //polling information and effect updates
   //gboard.pollGesturePins();   //this is needed if the method with interrupts is known to not work
   //change this, so that alarmHandler does actually handle all of the alarm (playAlarm() should be used inside alarmHandler. Change function name to pollAlarms() or something like that
-  if (alarms.checkForAlarm (rtc.now())) {
+  if (alarms.checkForAlarm (rtc.now())) { //change logic, so that alarm can be disabled instantly without needing to wait 1 minute (because it will be constantly turned on again until the minute is over)
     buzzer.playAlarms();
   }
   serial.poll();
