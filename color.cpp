@@ -4,15 +4,10 @@ Color::Color () {
   
 }
 
-Color::Color (const uint8_t &setting = 0) {
-  switch (setting) {
-    case 42:
-      r = g = b = alpha = 255;
-      break;
-    default:
-      r = g = b = alpha = 0;
-      break;
-  }
+Color::Color (const uint8_t &r, const uint8_t &g, const uint8_t &b) {
+  this->r = r;
+  this->g = g;
+  this->b = b;
 }
 
 //converts RGBa color to RGB color

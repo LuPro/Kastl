@@ -23,7 +23,7 @@ class Color { //stores all needed information for one color and some helper func
     
   public:
     Color ();
-    Color (const uint8_t &setting);
+    Color (const uint8_t &r, const uint8_t &g, const uint8_t &b);
   
     Color operator= (const Color color);
   

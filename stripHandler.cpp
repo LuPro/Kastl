@@ -59,7 +59,13 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
     } else {
       currentEffect[group]--;
     }
-    //currentEffect[group] %= 7;
+    
+    if (currentEffect[group] > NR_EFFECTS - 1) {
+      //currentEffect[group] = NR_EFFECTS - 1);
+      currentEffect[group] = 2;
+    }
+    
+    //currentEffect[group] %= NR_EFFECTS;
     currentEffect[group] %= 3;    //only for debugging
     Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
@@ -72,11 +78,11 @@ void StripHandler::colorWipe (const Color &color, const uint8_t &group) {
   uint8_t passes = 0;
   uint8_t strip = 0;
 
-  if (group == 0) {
-    passes = 2;
-  } else {
+  if (group == groupTop) {
     passes = 3;
-    strip = 2;
+  } else {
+    passes = 4;
+    strip = drawer;
   }
 
   for (; strip < passes; strip++) {
@@ -99,7 +105,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
   uint8_t passes = 0;
   uint8_t stripPos = 0;
 
-  unsigned long long now = 0;
+  unsigned long now = 0;
   now = millis();
 
   if (now < nextUpdate[group]) {
@@ -107,11 +113,11 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
   }
   nextUpdate[group] = now + ((delayTime / (delayFactor / 255.0) ) * (generalDelay / 255.0) );
 
-  if (group == 0) {
-    passes = 2;
-  } else {
+  if (group == groupTop) {
     passes = 3;
-    stripPos = 2;
+  } else {
+    passes = 4;
+    stripPos = drawer;
   }
 
   generalDelay = distanceBorderUP;
@@ -160,9 +166,23 @@ void StripHandler::updateEffects () {
         case breathingFast:
           breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_FAST);
           break;
+        case alarmEffect:
+          colorWipe (Color(255, 0, 0), groupTop);
+          break;
         default:
           break;
       }
     }
   }
 }
+
+void StripHandler::alarm (const bool &on) {
+  static uint8_t oldEffect = 0;
+  if (on) {
+    oldEffect = currentEffect[groupTop];
+    currentEffect[groupTop] = alarmEffect;
+  } else {
+    currentEffect[groupTop] = oldEffect;
+  }
+}
+

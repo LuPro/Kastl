@@ -80,33 +80,50 @@ void setup() {
 
 void loop() {
   static SoundHandler buzzer;
-  static AlarmHandler alarms;
   static StripHandler strips;
+  static AlarmHandler alarms (strips, buzzer);
   static SerialHandler serial (strips, alarms, rtc);
+  static bool test = true;
 
   if (gboard.gC_isClean()) {
     switch (gboard.getGestureCode()) {
       case fWE:
         Serial.println("WE, toggled");
-        strips.toggle();
+        if (alarms.getIsRinging()) {
+          alarms.snooze (rtc.now());
+        } else {
+          strips.toggle();
+        }
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fEW:
         Serial.println("EW, toggled");
-        strips.toggle();
+        if (alarms.getIsRinging()) {
+          alarms.snooze (rtc.now());
+        } else {
+          strips.toggle();
+        }
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fSN:
         Serial.println("SN, effects");
-        strips.cycleEffects(0, true);
+        if (alarms.getIsRinging()) {
+          alarms.dismiss();
+        } else {
+          strips.cycleEffects(0, true);
+        }
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
       case fNS:
         Serial.println("NS, effects");
-        strips.cycleEffects(0, false);
+        if (alarms.getIsRinging()) {
+          alarms.dismiss();
+        } else {
+          strips.cycleEffects(0, false);
+        }
         gboard.set_cleanFlag_gC (false);
         gboard.clear_gC ();
         break;
@@ -125,16 +142,20 @@ void loop() {
     }
   }
 
+  if (test) {
+    alarms.__debug_startAlarm();
+    test = false;
+  }
+
   //polling information and effect updates
   //gboard.pollGesturePins();   //this is needed if the method with interrupts is known to not work
-  //change this, so that alarmHandler does actually handle all of the alarm (playAlarm() should be used inside alarmHandler. Change function name to pollAlarms() or something like that
-  if (alarms.checkForAlarm (rtc.now())) { //change logic, so that alarm can be disabled instantly without needing to wait 1 minute (because it will be constantly turned on again until the minute is over)
-    buzzer.playAlarms();
-  }
+  alarms.pollAlarms (rtc.now());
   serial.poll();
+  alarms.updateSound();
   strips.updateEffects();
 }
 
+//I can't use TMR0 here, because in wiring.c the TMR0 OVF_vect is already declared. CHECK: does tone() really use TMR2?
 //TMR2 will overflow every 16,384 milliseconds (with prescaler of 1024 on 16MHz). This is the duration of the timeout for gesture board codes
 ISR (TIMER2_OVF_vect) {
   //select clocksource (none) == TMR2 stopped

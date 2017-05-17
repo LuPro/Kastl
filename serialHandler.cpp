@@ -103,14 +103,14 @@ void SerialHandler::parseAlarm (const uint8_t &data) {
 
       switch (action) {
         case create:
-          alarms->setAlarm (Alarm(doW, h, m, true, sound, volume, snoozeTime));
+          alarms->setAlarm (Alarm(doW, h, m, true, sound, snoozeTime));
           break;
         case edit:
           //probably not needed, look at alarmHandler.h for more information
           //edit can also delete (?)
           break;
         case deleteAlarm:
-          alarms->deleteAlarm ( Alarm(doW, h, m, true, sound, volume, snoozeTime) );
+          alarms->deleteAlarm ( Alarm(doW, h, m, true, sound, snoozeTime) );
           break;
         case clearAll:
           alarms->deleteAllAlarms();
@@ -157,6 +157,4 @@ void SerialHandler::parseTime (const uint8_t &data) {
       break;
   }
 }
-
-
 

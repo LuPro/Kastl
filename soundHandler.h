@@ -3,14 +3,13 @@
 
 #include <Arduino.h>
 
-#define PIEZO_PIN 9 //WARNING THIS IS DEFINITELY NOT RIGHT AND JUST SOME RANDOM VALUE I PUT SO AT LEAST SOMETHING IS HERE
+#define PIEZO_PIN PD7 //WARNING THIS IS DEFINITELY NOT RIGHT AND JUST SOME RANDOM VALUE I PUT SO AT LEAST SOMETHING IS HERE
 
 class SoundHandler {
   private:
     
   public:
-    //change volume from float 0-1 to int 0-255
-    void playAlarm (const float &volume, const uint16_t &frequency, const uint16_t &baseDuration);
+    void playAlarm (const uint16_t &frequency, const uint16_t &duration);
 };
 
 #endif //soundhandler_h

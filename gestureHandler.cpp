@@ -10,8 +10,10 @@ void GestureHandler::pollGesturePins () {
     pinStatus |= (PINB0 << 2);
 
     if (pinStatus != oldPinStatus) {
+      Serial.print("Pin changed! ");
       oldPinStatus = pinStatus;
       gestureCode += oldPinStatus ^ pinStatus;
+      Serial.println(gestureCode);
       triggerTMR();
     }
 }
