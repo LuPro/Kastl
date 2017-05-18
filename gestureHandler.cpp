@@ -2,27 +2,38 @@
 
 //This function just reads in the gesture board data pins, it does not interpret them or anythingg
 void GestureHandler::pollGesturePins () {
-    static uint8_t oldPinStatus = 0;
     uint8_t pinStatus = 0;
 
     pinStatus = PIND4;
     pinStatus |= (PINC0 << 1);
     pinStatus |= (PINB0 << 2);
+    //Serial.print("Pin status: "); Serial.println(pinStatus, BIN);
+    //Serial.print("Old status: "); Serial.println(oldPinStatus, BIN);
 
+    static uint8_t oldPinStatus = pinStatus;
     if (pinStatus != oldPinStatus) {
+      Serial.print("\nPin status: "); Serial.println(pinStatus, BIN);
+      Serial.print("Old status: "); Serial.println(oldPinStatus, BIN);
       Serial.print("Pin changed! ");
+      gestureCode |= oldPinStatus ^ pinStatus;
       oldPinStatus = pinStatus;
-      gestureCode += oldPinStatus ^ pinStatus;
-      Serial.println(gestureCode);
-      triggerTMR();
+      Serial.println(gestureCode, BIN);
+      timeOut = millis() + GESTURE_TIMEOUT;
     }
 }
 
+void GestureHandler::checkTimeout () {
+  if (millis() > timeOut && newCode) {
+    cleanFlag_gC = true;
+    newCode = false;
+  }
+}
+
 void GestureHandler::setGestureBit (const uint8_t &pin) {
-  //Serial.print("set Bit: "); Serial.println(pin);
   gestureCode |= (1 << pin);
   cleanFlag_gC = false;
-  triggerTMR();
+  newCode = true;
+  timeOut = millis() + GESTURE_TIMEOUT;
 }
 
 //Could possibly be problematic, because I'm unsure whether ATmega queues the interrupts or just forgets everything

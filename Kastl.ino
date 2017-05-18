@@ -27,7 +27,17 @@ enum Gestures {
 };
 
 void setup() {
-  //ToDo: Initialize all pins according to Meschik's rules!!!
+  PORTB = B00000100;
+  DDRB  = B00010110;
+  PINB  = 0;
+
+  PORTC = B00000000;
+  DDRC  = B00001110;
+  PINC  = 0;
+
+  PORTD = B00000000;
+  DDRD  = B11100010;
+  PIND  = 0;
 
   Serial.begin(9600);
 
@@ -37,19 +47,19 @@ void setup() {
   }
 
   if (rtc.lostPower()) {
-    //Maybe a sound warning signal that indicates that the module has a wrong time (only if it is deactivatable)
+    //maybe make a warning sound here
   }
 
   //Serial.println("Initializing Timer2");
   //turn TMR2 completely off
   //select clocksource (none) == TMR2 stopped
-  TCCR2B = B00000000;
-  //reset TMR2 value to 0, in case it already counted something before being turned off
-  TCNT2 = 0;
-  //reset the interrupt flag
-  TIFR2 = B00000000;
-  //disable TMR2 overflow interrupt
-  TIMSK2 = B00000000;
+  /*TCCR2B = B00000000;
+    //reset TMR2 value to 0, in case it already counted something before being turned off
+    TCNT2 = 0;
+    //reset the interrupt flag
+    TIFR2 = B00000000;
+    //disable TMR2 overflow interrupt
+    TIMSK2 = B00000000;*/
 
   //Serial.println("Initializing INT0 and INT1 (airwheel)");
   //airwheel data
@@ -83,57 +93,59 @@ void loop() {
   static StripHandler strips;
   static AlarmHandler alarms (strips, buzzer);
   static SerialHandler serial (strips, alarms, rtc);
-  static bool test = true;
+  static bool testAlarm = 0;
 
-  if (gboard.gC_isClean()) {
-    switch (gboard.getGestureCode()) {
-      case fWE:
-        Serial.println("WE, toggled");
-        if (alarms.getIsRinging()) {
-          alarms.snooze (rtc.now());
-        } else {
-          strips.toggle();
-        }
-        gboard.set_cleanFlag_gC (false);
-        gboard.clear_gC ();
-        break;
-      case fEW:
-        Serial.println("EW, toggled");
-        if (alarms.getIsRinging()) {
-          alarms.snooze (rtc.now());
-        } else {
-          strips.toggle();
-        }
-        gboard.set_cleanFlag_gC (false);
-        gboard.clear_gC ();
-        break;
-      case fSN:
-        Serial.println("SN, effects");
-        if (alarms.getIsRinging()) {
-          alarms.dismiss();
-        } else {
-          strips.cycleEffects(0, true);
-        }
-        gboard.set_cleanFlag_gC (false);
-        gboard.clear_gC ();
-        break;
-      case fNS:
-        Serial.println("NS, effects");
-        if (alarms.getIsRinging()) {
-          alarms.dismiss();
-        } else {
-          strips.cycleEffects(0, false);
-        }
-        gboard.set_cleanFlag_gC (false);
-        gboard.clear_gC ();
-        break;
-      default:
-        break;
+  if (millis() > gboard.getCooldown()) {
+    if (gboard.gC_isClean()) {
+      gboard.setCooldown();
+      switch (gboard.getGestureCode()) {
+        case fWE:
+          Serial.println("WE, toggled");
+          if (alarms.getIsRinging()) {
+            alarms.snooze (rtc.now());
+          } else {
+            strips.toggle();
+          }
+          gboard.set_cleanFlag_gC (false);
+          gboard.clear_gC ();
+          break;
+        case fEW:
+          Serial.println("EW, toggled");
+          if (alarms.getIsRinging()) {
+            alarms.snooze (rtc.now());
+          } else {
+            strips.toggle();
+          }
+          gboard.set_cleanFlag_gC (false);
+          gboard.clear_gC ();
+          break;
+        case fSN:
+          Serial.println("SN, effects");
+          if (alarms.getIsRinging()) {
+            alarms.dismiss();
+          } else {
+            strips.cycleEffects(0, true);
+          }
+          gboard.set_cleanFlag_gC (false);
+          gboard.clear_gC ();
+          break;
+        case fNS:
+          Serial.println("NS, effects");
+          if (alarms.getIsRinging()) {
+            alarms.dismiss();
+          } else {
+            strips.cycleEffects(0, false);
+          }
+          gboard.set_cleanFlag_gC (false);
+          gboard.clear_gC ();
+          break;
+        default:
+          break;
+      }
     }
   }
 
   if (brightnessChange) {
-    Serial.println("brightness change!");
     brightnessChange = false;
     if (brightnessUp) {
       strips.alphaUp();
@@ -142,22 +154,22 @@ void loop() {
     }
   }
 
-  if (test) {
+  if (testAlarm) {
     alarms.__debug_startAlarm();
-    test = false;
+    testAlarm = false;
   }
 
   //polling information and effect updates
-  //gboard.pollGesturePins();   //this is needed if the method with interrupts is known to not work
+  gboard.checkTimeout();
   alarms.pollAlarms (rtc.now());
   serial.poll();
   alarms.updateSound();
   strips.updateEffects();
 }
 
-//I can't use TMR0 here, because in wiring.c the TMR0 OVF_vect is already declared. CHECK: does tone() really use TMR2?
 //TMR2 will overflow every 16,384 milliseconds (with prescaler of 1024 on 16MHz). This is the duration of the timeout for gesture board codes
-ISR (TIMER2_OVF_vect) {
+//not used anymore since tone() uses it as well
+/*ISR (TIMER2_OVF_vect) {
   //select clocksource (none) == TMR2 stopped
   TCCR2B = B00000000;
   //disable TMR2 overflow interrupt
@@ -167,7 +179,7 @@ ISR (TIMER2_OVF_vect) {
   //reset TMR2 interrupt flag
   TIFR2 = B00000000;
   gboard.set_cleanFlag_gC (true);
-}
+  }*/
 
 //INT0: GPIN1: alphaDown
 //INT1: GPIN2: alphaUp

@@ -8,7 +8,7 @@
 
 #define NR_ALARMS 20
 
-#define PAUSE_ALARM 500
+#define PAUSE_ALARM 1000
 
 class AlarmHandler {
   private:

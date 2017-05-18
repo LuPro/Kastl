@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 
+#define GESTURE_COOLDOWN 1000 //in [ms]
+#define GESTURE_TIMEOUT 20    //in [ms]
+
 class GestureHandler {
   private:
     /*gesture codes:
@@ -12,6 +15,9 @@ class GestureHandler {
      * flick SN: 011
      * flick NS: 100
      */
+    unsigned long cooldown = 0;
+    unsigned long timeOut = 0;
+    bool newCode = 0;
     uint8_t gestureCode = 0;
     bool cleanFlag_gC = 0;
 
@@ -31,6 +37,16 @@ class GestureHandler {
     }
 
     void pollGesturePins ();
+
+    void checkTimeout ();
+
+    inline unsigned long getCooldown () {
+      return cooldown;
+    }
+
+    inline void setCooldown () {
+      cooldown = millis() + GESTURE_COOLDOWN;
+    }
 
     void setGestureBit (const uint8_t &pin);
 

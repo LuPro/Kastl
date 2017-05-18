@@ -69,7 +69,7 @@ void AlarmHandler::updateSound () {
 
   if (isRinging && now > nextUpdate) {
     nextUpdate = now + PAUSE_ALARM;
-    buzzer->playAlarm(500, 250);    //this needs to be changeable, not hardcoded
+    buzzer->playAlarm(1000, PAUSE_ALARM/2);    //this needs to be changeable, not hardcoded
   }
 }
 
@@ -79,7 +79,7 @@ void AlarmHandler::snooze (const DateTime &timeNow) {
 
     h = timeNow.hour();
     m = timeNow.minute();
-    if (m > 54) {
+    if (m >= (60 - snoozeTime)) {
       h++;
     }
 

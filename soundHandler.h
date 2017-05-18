@@ -3,7 +3,8 @@
 
 #include <Arduino.h>
 
-#define PIEZO_PIN PD7 //WARNING THIS IS DEFINITELY NOT RIGHT AND JUST SOME RANDOM VALUE I PUT SO AT LEAST SOMETHING IS HERE
+//#define PIEZO_PIN PB1
+#define PIEZO_PIN 9
 
 class SoundHandler {
   private:
