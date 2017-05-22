@@ -95,53 +95,56 @@ void loop() {
   static SerialHandler serial (strips, alarms, rtc);
   static bool testAlarm = 0;
 
-  if (millis() > gboard.getCooldown()) {
-    if (gboard.gC_isClean()) {
-      gboard.setCooldown();
-      switch (gboard.getGestureCode()) {
-        case fWE:
-          Serial.println("WE, toggled");
-          if (alarms.getIsRinging()) {
-            alarms.snooze (rtc.now());
-          } else {
-            strips.toggle();
-          }
-          gboard.set_cleanFlag_gC (false);
-          gboard.clear_gC ();
-          break;
-        case fEW:
-          Serial.println("EW, toggled");
-          if (alarms.getIsRinging()) {
-            alarms.snooze (rtc.now());
-          } else {
-            strips.toggle();
-          }
-          gboard.set_cleanFlag_gC (false);
-          gboard.clear_gC ();
-          break;
-        case fSN:
-          Serial.println("SN, effects");
-          if (alarms.getIsRinging()) {
-            alarms.dismiss();
-          } else {
-            strips.cycleEffects(0, true);
-          }
-          gboard.set_cleanFlag_gC (false);
-          gboard.clear_gC ();
-          break;
-        case fNS:
-          Serial.println("NS, effects");
-          if (alarms.getIsRinging()) {
-            alarms.dismiss();
-          } else {
-            strips.cycleEffects(0, false);
-          }
-          gboard.set_cleanFlag_gC (false);
-          gboard.clear_gC ();
-          break;
-        default:
-          break;
-      }
+  if (millis() < gboard.getCooldown() && gboard.gC_isClean()) {
+    gboard.set_cleanFlag_gC (false);
+    gboard.clear_gC ();
+  }
+
+  if (gboard.gC_isClean()) {
+    gboard.setCooldown();
+    switch (gboard.getGestureCode()) {
+      case fWE:
+        Serial.println("WE, toggled");
+        if (alarms.getIsRinging()) {
+          alarms.snooze (rtc.now());
+        } else {
+          strips.toggle(groupTop);
+        }
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
+        break;
+      case fEW:
+        Serial.println("EW, toggled");
+        if (alarms.getIsRinging()) {
+          alarms.snooze (rtc.now());
+        } else {
+          strips.toggle(groupTop);
+        }
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
+        break;
+      case fSN:
+        Serial.println("SN, effects");
+        if (alarms.getIsRinging()) {
+          alarms.dismiss();
+        } else {
+          strips.cycleEffects(0, true);
+        }
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
+        break;
+      case fNS:
+        Serial.println("NS, effects");
+        if (alarms.getIsRinging()) {
+          alarms.dismiss();
+        } else {
+          strips.cycleEffects(0, false);
+        }
+        gboard.set_cleanFlag_gC (false);
+        gboard.clear_gC ();
+        break;
+      default:
+        break;
     }
   }
 
@@ -155,9 +158,11 @@ void loop() {
   }
 
   if (testAlarm) {
-    alarms.__debug_startAlarm();
+    strips.toggle (1);
+    //alarms.__debug_startAlarm();
     testAlarm = false;
   }
+
 
   //polling information and effect updates
   gboard.checkTimeout();

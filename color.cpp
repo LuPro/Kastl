@@ -4,10 +4,11 @@ Color::Color () {
   
 }
 
-Color::Color (const uint8_t &r, const uint8_t &g, const uint8_t &b) {
+Color::Color (const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &alpha) {
   this->r = r;
   this->g = g;
   this->b = b;
+  this->alpha = alpha;
 }
 
 //converts RGBa color to RGB color
