@@ -8,10 +8,7 @@
 
 #define DS3231_I2C_ADDRESS 104
 
-//sound in Hz
-#define LOW_PITCH 2500
-#define MID_PITCH 3000
-#define HIGH_PITCH 4000
+#define REED_PIN PC3
 
 GestureHandler gboard;
 RTC_DS3231 rtc;
@@ -157,6 +154,8 @@ void loop() {
     }
   }
 
+  strips.setStripsOn (digitalRead(REED_PIN), groupDrawer);
+  
   if (testAlarm) {
     strips.toggle (1);
     //alarms.__debug_startAlarm();

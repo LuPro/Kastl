@@ -113,7 +113,7 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
 //flushes a desired LED group with a desired RGB color, use Strips enum to choose which strip to use
 void StripHandler::colorWipe (const Color &color, const uint8_t &group) {
   uint8_t passes = 0;
-  uint8_t strip = 0;
+  uint8_t strip = top;
 
   if (group == groupTop) {
     passes = 2;
@@ -140,7 +140,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
   uint8_t generalDelay = 127;
   uint8_t delayFactor = 127;
   uint8_t passes = 0;
-  uint8_t stripPos = 0;
+  uint8_t strip = top;
 
   unsigned long now = 0;
   now = millis();
@@ -154,7 +154,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
     passes = 2;
   } else if (group == groupDrawer) {
     passes = 3;
-    stripPos = drawer;
+    strip = drawer;
   }
 
   generalDelay = distanceBorderUP;
@@ -162,7 +162,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
     generalDelay = 100;
   }
 
-  for (; stripPos < passes; stripPos++) {
+  for (; strip < passes; strip++) {
     if (distanceBorderUP < distanceBorderDN) {
       delayFactor += distanceBorderUP & B01111111;
     } else {
@@ -179,7 +179,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
 
     col = color;
     col.setCh_alpha ( (alpha / 255.0) * color.getCh_alpha());
-    colorWipe (col, stripPos);
+    colorWipe (col, strip);
 
     if (alpha == BREATH_BORDER_UP) {
       up = false;
@@ -211,10 +211,10 @@ void StripHandler::rainbowCycle (const uint8_t &group, const uint16_t &delayTime
   }
 
   if (group == groupTop) {
-    for (uint8_t i = 0; i < strips[mid_up].numPixels(); i++) {
-      strips[mid_up].setPixelColor(i, strips[group].getPixelColor(i + 3));
+    for (uint8_t i = 0; i < strips[mid].numPixels(); i++) {
+      strips[mid].setPixelColor(i, strips[group].getPixelColor(i + 3));
     }
-    strips[mid_up].show();
+    strips[mid].show();
   }
 
   strips[group].show();   // write all the pixels out

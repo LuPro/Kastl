@@ -18,7 +18,7 @@
 #define NR_LEDS_DRAWER 6
 #define DATA_PIN_DRAWER PD6   //HW Pin 13
 
-#define ALPHA_STEP_SIZE 5
+#define ALPHA_STEP_SIZE 10
 #define ALPHA_BORDER_DN 20
 
 #define DELAY_BREATHING_SLOW 80
@@ -52,8 +52,7 @@ enum LightGroup {
 
 enum Strips { //enumeration for the different LED strips
   top,
-  mid_up,
-  //mid_dn,
+  mid,
   drawer
 };
 
@@ -63,13 +62,11 @@ class StripHandler {
     bool stripsOn[2] = {0, 0};
     uint8_t currentEffect[2] = {staticCol, staticCol};
     unsigned long nextUpdate[2] = {0, 0};
-    Color primaryCol[2] = {Color(255, 0, 0), Color(255, 255, 255)};
+    Color primaryCol[2] = {Color(255, 255, 255), Color(255, 255, 255)};
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid_up, mid_dn, drawer)
-      //Still need to test if this is a NEO_RGB, or NEO_GRB. If while testing R and G channel are inverted, choose NEO_GRB.
       Adafruit_NeoPixel(NR_LEDS_UP, DATA_PIN_UP, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_MID_UP, DATA_PIN_MID_UP, NEO_RGB + NEO_KHZ800),
-      //Adafruit_NeoPixel(NR_LEDS_MID_DN, DATA_PIN_MID_DN, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_DRAWER, DATA_PIN_DRAWER, NEO_RGB + NEO_KHZ800)
     };
 
@@ -99,6 +96,10 @@ class StripHandler {
       } else {
         updateEffects();
       }
+    }
+
+    inline void setStripsOn (const bool &on, const uint8_t &group) {
+      stripsOn[group] = on;
     }
 
     void alphaUp();
