@@ -59,10 +59,10 @@ void StripHandler::alphaUp () {
   Serial.println("alphaUp");
   uint8_t alpha;
   alpha = primaryCol[0].getCh_alpha();
-  if (alpha > 250) {
+  if (alpha > 255 - ALPHA_STEP_SIZE) {
     alpha = 255;
   } else {
-    alpha += 5;
+    alpha += ALPHA_STEP_SIZE;
   }
   primaryCol[0].setCh_alpha (alpha);
 }
@@ -76,19 +76,19 @@ void StripHandler::alphaDown () {
   Serial.println("alphaDown");
   uint8_t alpha;
   alpha = primaryCol[0].getCh_alpha();
-  if (alpha < 25) {
-    alpha = 20;
+  if (alpha < ALPHA_BORDER_DN + ALPHA_STEP_SIZE) {
+    alpha = ALPHA_BORDER_DN;
   } else {
-    alpha -= 5;
+    alpha -= ALPHA_STEP_SIZE;
   }
   primaryCol[0].setCh_alpha (alpha);
 }
 
 void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
   if (stripsOn[group]) {
-    colorWipe (Color(255,255,255), group);
-    delay(10);
-    
+    colorWipe (Color(255, 255, 255, primaryCol[group].getCh_alpha()), group);
+    delay(5);
+
     if (up) {
       currentEffect[group]++;
     } else {
@@ -104,8 +104,8 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
     currentEffect[group] %= 7;    //only for debugging
     Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
-    if (group == 0) {
-      toggle(0);
+    if (group == groupTop) {
+      toggle(groupTop);
     }
   }
 }
@@ -152,7 +152,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
 
   if (group == groupTop) {
     passes = 2;
-  } else {
+  } else if (group == groupDrawer) {
     passes = 3;
     stripPos = drawer;
   }
@@ -209,6 +209,14 @@ void StripHandler::rainbowCycle (const uint8_t &group, const uint16_t &delayTime
     col.setCh_alpha (primaryCol[group].getCh_alpha());
     strips[group].setPixelColor(i, col.getRGB());
   }
+
+  if (group == groupTop) {
+    for (uint8_t i = 0; i < strips[mid_up].numPixels(); i++) {
+      strips[mid_up].setPixelColor(i, strips[group].getPixelColor(i + 3));
+    }
+    strips[mid_up].show();
+  }
+
   strips[group].show();   // write all the pixels out
   ++rainbowPos;
   rainbowPos %= 256;
@@ -224,8 +232,9 @@ void StripHandler::altRainbow (const uint8_t &group, const uint16_t &delayTime) 
   }
 
   nextUpdate[group] = now + delayTime;
+  col = colorWheel(rainbowPos);
   col.setCh_alpha (primaryCol[group].getCh_alpha());
-  colorWipe (colorWheel(rainbowPos), group);
+  colorWipe (col, group);
   ++rainbowPos;
   rainbowPos %= 256;
 }
@@ -243,37 +252,35 @@ Color StripHandler::colorWheel (uint8_t WheelPos) {
 }
 
 void StripHandler::updateEffects () {
-  for (uint8_t i = 0; i <= groupDrawer; i++) {
-    if (stripsOn[i]) {
-      for (uint8_t lightGroups = 0; lightGroups < 2; lightGroups++) {
-        switch (currentEffect[lightGroups]) {
-          case staticCol:
-            colorWipe (primaryCol[lightGroups], lightGroups);
-            break;
-          case breathingSlow:
-            breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_SLOW);
-            break;
-          case breathingFast:
-            breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_FAST);
-            break;
-          case rainbowSlow:
-            rainbowCycle (lightGroups, DELAY_RAINBOW_SLOW);
-            break;
-          case rainbowFast:
-            rainbowCycle (lightGroups, DELAY_RAINBOW_FAST);
-            break;
-          case altRainbowSlow:
-            altRainbow (lightGroups, DELAY_ALT_RAINBOW_SLOW);
-            break;
-          case altRainbowFast:
-            altRainbow (lightGroups, DELAY_ALT_RAINBOW_FAST);
-            break;
-          case alarmEffect:
-            colorWipe (Color(0, 255, 0), groupTop);
-            break;
-          default:
-            break;
-        }
+  for (uint8_t lightGroups = 0; lightGroups <= groupDrawer; lightGroups++) {
+    if (stripsOn[lightGroups]) {
+      switch (currentEffect[lightGroups]) {
+        case staticCol:
+          colorWipe (primaryCol[lightGroups], lightGroups);
+          break;
+        case breathingSlow:
+          breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_SLOW);
+          break;
+        case breathingFast:
+          breathing (primaryCol[lightGroups], lightGroups, DELAY_BREATHING_FAST);
+          break;
+        case rainbowSlow:
+          rainbowCycle (lightGroups, DELAY_RAINBOW_SLOW);
+          break;
+        case rainbowFast:
+          rainbowCycle (lightGroups, DELAY_RAINBOW_FAST);
+          break;
+        case altRainbowSlow:
+          altRainbow (lightGroups, DELAY_ALT_RAINBOW_SLOW);
+          break;
+        case altRainbowFast:
+          altRainbow (lightGroups, DELAY_ALT_RAINBOW_FAST);
+          break;
+        case alarmEffect:
+          colorWipe (Color(0, 255, 0), groupTop);
+          break;
+        default:
+          break;
       }
     }
   }

@@ -93,7 +93,7 @@ void loop() {
   static StripHandler strips;
   static AlarmHandler alarms (strips, buzzer);
   static SerialHandler serial (strips, alarms, rtc);
-  static bool testAlarm = 0;
+  static bool testAlarm = 1;
 
   if (millis() < gboard.getCooldown() && gboard.gC_isClean()) {
     gboard.set_cleanFlag_gC (false);
