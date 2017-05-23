@@ -5,10 +5,7 @@ A smart bedside table with gesture control, a mobile app and various features li
 
 # ToDo
 
-- [IMPORTANT] initialize all pins according to the 4 Meschik rules [IMPORTANT]
-- timeout between gestures (on/off shouldn't happen more often than eg 2 seconds)
-- look into the order of the color channels and possibly correct the order in the data protocol (RGBa or aBGR?)
-- look into the order of the serial connection (android app)
+- Check if Meschik rules are applied correctly
 
 # ToDo long term
 
