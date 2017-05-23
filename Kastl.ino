@@ -157,8 +157,8 @@ void loop() {
   strips.setStripsOn (digitalRead(REED_PIN), groupDrawer);
   
   if (testAlarm) {
-    strips.toggle (1);
-    alarms.__debug_startAlarm();
+    //strips.toggle (1);
+    //alarms.__debug_startAlarm();
     testAlarm = false;
   }
 
