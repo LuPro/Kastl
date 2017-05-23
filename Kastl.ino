@@ -158,10 +158,9 @@ void loop() {
   
   if (testAlarm) {
     strips.toggle (1);
-    //alarms.__debug_startAlarm();
+    alarms.__debug_startAlarm();
     testAlarm = false;
   }
-
 
   //polling information and effect updates
   gboard.checkTimeout();
@@ -170,20 +169,6 @@ void loop() {
   alarms.updateSound();
   strips.updateEffects();
 }
-
-//TMR2 will overflow every 16,384 milliseconds (with prescaler of 1024 on 16MHz). This is the duration of the timeout for gesture board codes
-//not used anymore since tone() uses it as well
-/*ISR (TIMER2_OVF_vect) {
-  //select clocksource (none) == TMR2 stopped
-  TCCR2B = B00000000;
-  //disable TMR2 overflow interrupt
-  TIMSK2 = B00000000;
-  //reset TMR2 value to 0
-  TCNT2 = 0;
-  //reset TMR2 interrupt flag
-  TIFR2 = B00000000;
-  gboard.set_cleanFlag_gC (true);
-  }*/
 
 //INT0: GPIN1: alphaDown
 //INT1: GPIN2: alphaUp

@@ -1,27 +1,5 @@
 #include "gestureHandler.h"
 
-//This function just reads in the gesture board data pins, it does not interpret them or anythingg
-void GestureHandler::pollGesturePins () {
-    uint8_t pinStatus = 0;
-
-    pinStatus = PIND4;
-    pinStatus |= (PINC0 << 1);
-    pinStatus |= (PINB0 << 2);
-    //Serial.print("Pin status: "); Serial.println(pinStatus, BIN);
-    //Serial.print("Old status: "); Serial.println(oldPinStatus, BIN);
-
-    static uint8_t oldPinStatus = pinStatus;
-    if (pinStatus != oldPinStatus) {
-      Serial.print("\nPin status: "); Serial.println(pinStatus, BIN);
-      Serial.print("Old status: "); Serial.println(oldPinStatus, BIN);
-      Serial.print("Pin changed! ");
-      gestureCode |= oldPinStatus ^ pinStatus;
-      oldPinStatus = pinStatus;
-      Serial.println(gestureCode, BIN);
-      timeOut = millis() + GESTURE_TIMEOUT;
-    }
-}
-
 void GestureHandler::checkTimeout () {
   if (millis() > timeOut && newCode) {
     cleanFlag_gC = true;

@@ -36,8 +36,6 @@ class GestureHandler {
       return gestureCode;
     }
 
-    void pollGesturePins ();
-
     void checkTimeout ();
 
     inline unsigned long getCooldown () {
