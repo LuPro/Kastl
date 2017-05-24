@@ -47,6 +47,7 @@ class AlarmHandler {
     inline void __debug_startAlarm() {
       Serial.println("starting alarm");
       isRinging = true;
+      strips->alarm (true);
     }
 };
 

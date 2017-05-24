@@ -38,10 +38,7 @@ void setup() {
 
   Serial.begin(9600);
 
-  if (!rtc.begin()) {
-    //Serial.println("Couldn't find RTC");
-    while (1);
-  }
+  while (!rtc.begin());
 
   if (rtc.lostPower()) {
     //maybe make a warning sound here

@@ -69,7 +69,9 @@ void AlarmHandler::updateSound () {
 
   if (isRinging && now > nextUpdate) {
     nextUpdate = now + PAUSE_ALARM;
-    buzzer->playAlarm(1000, PAUSE_ALARM/2);    //this needs to be changeable, not hardcoded
+    buzzer->playAlarm (1000, PAUSE_ALARM >> 1);    //this needs to be changeable, not hardcoded
+    strips->setStripsOn (true, groupTop);
+    strips->setTimeOff (now + (PAUSE_ALARM >> 1));
   }
 }
 

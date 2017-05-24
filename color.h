@@ -4,8 +4,8 @@
 #include "Arduino.h"
 
 enum Channels { //enumeration for the different channels, used in the getChannel function
-  chR,
   chG,
+  chR,
   chB,
   chAlpha
 };

@@ -30,9 +30,9 @@ uint32_t Color::RGBa_to_RGB (const uint32_t &RGBa) const {
   //stores the resulting RGB color
   val_RGB = b;
   val_RGB = val_RGB << 8;
-  val_RGB |= g;
-  val_RGB = val_RGB << 8;
   val_RGB |= r;
+  val_RGB = val_RGB << 8;
+  val_RGB |= g;
 
   return val_RGB;
 }
@@ -46,9 +46,9 @@ uint32_t Color::generateRGBa (const uint8_t &r, const uint8_t &g, const uint8_t 
   RGBa = RGBa << 8;
   RGBa |= b;
   RGBa = RGBa << 8;
-  RGBa |= g;
-  RGBa = RGBa << 8;
   RGBa |= r;
+  RGBa = RGBa << 8;
+  RGBa |= g;
 
   return RGBa;
 }
@@ -61,9 +61,9 @@ Color Color::operator= (const Color color) {
 }
 
 void Color::setColorRGB (uint32_t color) {
-  r = color & B11111111;
-  color = color >> 8;
   g = color & B11111111;
+  color = color >> 8;
+  r = color & B11111111;
   color = color >> 8;
   b = color & B11111111;
   

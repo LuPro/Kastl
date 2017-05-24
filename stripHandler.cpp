@@ -179,7 +179,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
 
     col = color;
     col.setCh_alpha ( (alpha / 255.0) * color.getCh_alpha());
-    colorWipe (col, strip);
+    colorWipe (col, group);
 
     if (alpha == BREATH_BORDER_UP) {
       up = false;
@@ -251,6 +251,12 @@ Color StripHandler::colorWheel (uint8_t WheelPos) {
   }
 }
 
+void StripHandler::alarmLightEffect (const uint8_t &group) {
+  if (millis() > timeOff_Alarm) {
+    stripsOn[group] = false;
+  }
+}
+
 void StripHandler::updateEffects () {
   for (uint8_t lightGroups = 0; lightGroups <= groupDrawer; lightGroups++) {
     if (stripsOn[lightGroups]) {
@@ -277,21 +283,29 @@ void StripHandler::updateEffects () {
           altRainbow (lightGroups, DELAY_ALT_RAINBOW_FAST);
           break;
         case alarmEffect:
-          colorWipe (Color(0, 255, 0), groupTop);
+          colorWipe (Color(255, 0, 0), lightGroups);
+          alarmLightEffect (lightGroups);
           break;
         default:
           break;
       }
+    } else {
+      colorWipe (Color (0, 0, 0), lightGroups);
     }
   }
 }
 
 void StripHandler::alarm (const bool &on) {
   static uint8_t oldEffect = 0;
+  static uint8_t oldOnStatus = 0;
+  
   if (on) {
     oldEffect = currentEffect[groupTop];
+    oldOnStatus = stripsOn[groupTop];
+    stripsOn[groupTop] = true;
     currentEffect[groupTop] = alarmEffect;
   } else {
+    stripsOn[groupTop] = oldOnStatus;
     currentEffect[groupTop] = oldEffect;
   }
 }

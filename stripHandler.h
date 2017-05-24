@@ -59,6 +59,8 @@ enum Strips { //enumeration for the different LED strips
 //colors are comprised of R, G, B and alpha channel
 class StripHandler {
   private:
+    unsigned long timeOff_Alarm = 0;
+  
     bool stripsOn[2] = {0, 0};
     uint8_t currentEffect[2] = {staticCol, staticCol};
     unsigned long nextUpdate[2] = {0, 0};
@@ -102,6 +104,10 @@ class StripHandler {
       stripsOn[group] = on;
     }
 
+    inline void setTimeOff (const unsigned long &timeOff) {
+      timeOff_Alarm = timeOff;
+    }
+
     void alphaUp();
     void alphaDown();
 
@@ -114,6 +120,8 @@ class StripHandler {
     void rainbowCycle (const uint8_t &group, const uint16_t &delayTime);
 
     void altRainbow (const uint8_t &group, const uint16_t &delayTime);
+
+    void alarmLightEffect (const uint8_t &group);
 
     Color colorWheel (uint8_t wheelPos);
     
