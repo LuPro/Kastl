@@ -142,6 +142,7 @@ void loop() {
     }
   }
 
+
   if (brightnessChange) {
     brightnessChange = false;
     if (brightnessUp) {
@@ -152,10 +153,17 @@ void loop() {
   }
 
   strips.setStripsOn (digitalRead(REED_PIN), groupDrawer);
-  
+
+  //DateTime dateTimeNow = rtc.now();
+  //Serial.print(dateTimeNow.hour()); Serial.print(":"); Serial.print(dateTimeNow.minute()); Serial.print(":"); Serial.println(dateTimeNow.second());
+  //Serial.print(dateTimeNow.year()); Serial.print("-"); Serial.print(dateTimeNow.month()); Serial.print("-"); Serial.println(dateTimeNow.day());
+
   if (testAlarm) {
+    //rtc.adjust(DateTime (17, 5, 24, 19, 35, 35));
     //strips.toggle (1);
     //alarms.__debug_startAlarm();
+    //DateTime dateTimeNow = rtc.now();
+    //alarms.setAlarm (Alarm (B11111111, dateTimeNow.hour(), dateTimeNow.minute() + 1, 1, 0, 1));
     testAlarm = false;
   }
 

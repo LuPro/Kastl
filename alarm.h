@@ -21,7 +21,7 @@ class Alarm : Time {
     uint8_t sound = 0;      //alarm sound
     //ATTENTION: activeDay ALSO contains the active flag!!!! Bit 7 is a bool for active!!!
     //active flag dictates whether or not the alarm is active. If so, it will be triggered, if not it can be considered as deleted.
-    uint8_t activeDays = 0; //contains every day the alarm can be active as a flag (Bit 0-6 == Monday-Sunday)
+    uint8_t activeDays = 0; //contains every day the alarm can be active as a flag (Bit 0-6 == Sunday-Saturday)
     uint8_t snoozeTime = 0; //in minutes. Maybe make another default value (such as 5 min?)
 
   public:
@@ -37,8 +37,9 @@ class Alarm : Time {
 
     //fetches the sctiveFlag that's nested inside the activeDays variable
     inline bool isActive() {
-      return (activeDays & B10000000) == true;
+      return (activeDays & B10000000);
     }
+    
     inline uint8_t getSnoozeTime () {
       return snoozeTime;
     }

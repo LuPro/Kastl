@@ -12,7 +12,7 @@ void AlarmHandler::setAlarm (const Alarm &newAlarm) {
   uint8_t i;
   for (i = 0; (i < NR_ALARMS); i++) {
     if (!setAlarms[i]) {
-      continue;
+      break;
     }
   }
 
@@ -45,11 +45,13 @@ void AlarmHandler::deleteAllAlarms () {
 
 void AlarmHandler::pollAlarms (const DateTime &timeNow) {
   uint8_t nextDay = 0;
+  uint8_t doW = timeNow.dayOfTheWeek();
+  
   for (uint8_t i = 0; i < NR_ALARMS; i++) {
     if (alarms[i].isActive()) {
-      nextDay = alarms[i].getNextDay (timeNow.dayOfTheWeek());
+      nextDay = alarms[i].getNextDay (doW);
 
-      if (!nextDay) {
+      if (nextDay == doW) {
         if (alarms[i].getAlarmHour() == timeNow.hour() && alarms[i].getAlarmMinute() == timeNow.minute() && timeNow.second() == 1) {
           if (alarms[i] == snoozedAlarm) {
             deleteAlarm (alarms[i]);
@@ -76,6 +78,7 @@ void AlarmHandler::updateSound () {
 }
 
 void AlarmHandler::snooze (const DateTime &timeNow) {
+  Serial.println("snooze");
   if (snoozeTime) {
     uint8_t h, m;
 
@@ -89,6 +92,7 @@ void AlarmHandler::snooze (const DateTime &timeNow) {
     m %= 60;
 
     Alarm newSnoozedAlarm (0, h, m, 1, 0, snoozeTime);
+    Serial.print("min: "); Serial.println(m);
 
     snoozedAlarm = newSnoozedAlarm;
     setAlarm (newSnoozedAlarm);

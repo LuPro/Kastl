@@ -15,6 +15,7 @@ Alarm::Alarm (const uint8_t &activeDays, const uint8_t &h, const uint8_t &m, con
   this->activeDays |= (active << 7);
   this->sound = sound;
   this->snoozeTime = snoozeTime;
+  //Serial.print("activeDays: "); Serial.println(activeDays, BIN);
 }
 
 Alarm Alarm::operator= (const Alarm &alarm) {
