@@ -52,36 +52,36 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
 //reduce alphaUp and alphaDown alpha changes, but increase frequency in gesture board settings
 void StripHandler::alphaUp () {
   if (stripsOn[groupTop] == false) {
-    Serial.println("alpha up, but off");
+    //Serial.println("alpha up, but off");
     return;
   }
 
-  Serial.println("alphaUp");
+  //Serial.println("alphaUp");
   uint8_t alpha;
-  alpha = primaryCol[0].getCh_alpha();
+  alpha = primaryCol[groupTop].getCh_alpha();
   if (alpha > 255 - ALPHA_STEP_SIZE) {
     alpha = 255;
   } else {
     alpha += ALPHA_STEP_SIZE;
   }
-  primaryCol[0].setCh_alpha (alpha);
+  primaryCol[groupTop].setCh_alpha (alpha);
 }
 
 void StripHandler::alphaDown () {
   if (stripsOn[groupTop] == false) {
-    Serial.println("alpha down, but off");
+    //Serial.println("alpha down, but off");
     return;
   }
 
-  Serial.println("alphaDown");
+  //Serial.println("alphaDown");
   uint8_t alpha;
-  alpha = primaryCol[0].getCh_alpha();
+  alpha = primaryCol[groupTop].getCh_alpha();
   if (alpha < ALPHA_BORDER_DN + ALPHA_STEP_SIZE) {
     alpha = ALPHA_BORDER_DN;
   } else {
     alpha -= ALPHA_STEP_SIZE;
   }
-  primaryCol[0].setCh_alpha (alpha);
+  primaryCol[groupTop].setCh_alpha (alpha);
 }
 
 void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
@@ -102,7 +102,7 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
 
     //currentEffect[group] %= NR_EFFECTS - 1;
     currentEffect[group] %= 7;    //only for debugging
-    Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
+    //Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
     if (group == groupTop) {
       toggle(groupTop);
@@ -169,8 +169,6 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
       delayFactor += distanceBorderDN & B01111111;
     }
 
-    //Serial.print("Alpha breath: "); Serial.println(alpha);
-
     if (up) {
       alpha++;
     } else {
@@ -217,7 +215,7 @@ void StripHandler::rainbowCycle (const uint8_t &group, const uint16_t &delayTime
     strips[mid].show();
   }
 
-  strips[group].show();   // write all the pixels out
+  strips[group].show();
   ++rainbowPos;
   rainbowPos %= 256;
 }
@@ -298,6 +296,13 @@ void StripHandler::updateEffects () {
 void StripHandler::alarm (const bool &on) {
   static uint8_t oldEffect = 0;
   static uint8_t oldOnStatus = 0;
+  static bool oldOn = 0;
+
+  if (oldOn == on) {
+    return;
+  } else {
+    oldOn = on; 
+  }
   
   if (on) {
     oldEffect = currentEffect[groupTop];

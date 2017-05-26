@@ -66,7 +66,7 @@ class StripHandler {
     unsigned long nextUpdate[2] = {0, 0};
     Color primaryCol[2] = {Color(255, 255, 255), Color(255, 255, 255)};
   
-    Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid_up, mid_dn, drawer)
+    Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       Adafruit_NeoPixel(NR_LEDS_UP, DATA_PIN_UP, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_MID_UP, DATA_PIN_MID_UP, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_DRAWER, DATA_PIN_DRAWER, NEO_RGB + NEO_KHZ800)

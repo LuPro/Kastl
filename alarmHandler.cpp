@@ -78,7 +78,6 @@ void AlarmHandler::updateSound () {
 }
 
 void AlarmHandler::snooze (const DateTime &timeNow) {
-  Serial.println("snooze");
   if (snoozeTime) {
     uint8_t h, m;
 
@@ -91,8 +90,7 @@ void AlarmHandler::snooze (const DateTime &timeNow) {
     m += snoozeTime;
     m %= 60;
 
-    Alarm newSnoozedAlarm (0, h, m, 1, 0, snoozeTime);
-    Serial.print("min: "); Serial.println(m);
+    Alarm newSnoozedAlarm (B11111111, h, m, 1, 0, snoozeTime);
 
     snoozedAlarm = newSnoozedAlarm;
     setAlarm (newSnoozedAlarm);

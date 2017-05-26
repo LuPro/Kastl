@@ -8,7 +8,7 @@
 
 #define DS3231_I2C_ADDRESS 104
 
-#define REED_PIN PC3
+#define REED_PIN 17//PC3
 
 GestureHandler gboard;
 RTC_DS3231 rtc;
@@ -29,14 +29,17 @@ void setup() {
   PINB  = 0;
 
   PORTC = B00000000;
-  DDRC  = B00001110;
+  DDRC  = B00000110;
   PINC  = 0;
 
   PORTD = B00000000;
   DDRD  = B11100010;
   PIND  = 0;
 
-  Serial.begin(9600);
+  analogReference (EXTERNAL);
+
+  Serial.begin(9600); //this only works if the Serial library has been edited to work with the 8MHz clock
+  //if this is not the case, use 4800 baud instead to get 9600 baud
 
   while (!rtc.begin());
 
@@ -44,18 +47,6 @@ void setup() {
     //maybe make a warning sound here
   }
 
-  //Serial.println("Initializing Timer2");
-  //turn TMR2 completely off
-  //select clocksource (none) == TMR2 stopped
-  /*TCCR2B = B00000000;
-    //reset TMR2 value to 0, in case it already counted something before being turned off
-    TCNT2 = 0;
-    //reset the interrupt flag
-    TIFR2 = B00000000;
-    //disable TMR2 overflow interrupt
-    TIMSK2 = B00000000;*/
-
-  //Serial.println("Initializing INT0 and INT1 (airwheel)");
   //airwheel data
   //set INT1 & INT0 to trigger on rising. INT1 B[3:2], INT0 B[1:0]
   EICRA = B00001111;
@@ -64,7 +55,6 @@ void setup() {
   //activate INT1 & INT0
   EIMSK = B00000011;
 
-  //Serial.println("Initializing PCINT2/1/0");
   //gesture data
   //enable the individual pins for interrupts
   PCMSK0 = B00000001; //enable PCINT on PCINT0, which corresponds to hardware pin 14 (pin 8 on arduino uno)
@@ -76,10 +66,8 @@ void setup() {
   //PCIE0 PCINT[7:0], PCIE1 PCINT[14:8], PCIE2 PCINT[23:16]
   PCICR = B00000111;
 
-  //Serial.println("Before sei();");
   //enables all interrupts: sets the I-flag in the SREG (status register)
   sei();
-  //Serial.println("After sei();");
 }
 
 void loop() {
@@ -87,7 +75,6 @@ void loop() {
   static StripHandler strips;
   static AlarmHandler alarms (strips, buzzer);
   static SerialHandler serial (strips, alarms, rtc);
-  static bool testAlarm = 1;
 
   if (millis() < gboard.getCooldown() && gboard.gC_isClean()) {
     gboard.set_cleanFlag_gC (false);
@@ -98,7 +85,7 @@ void loop() {
     gboard.setCooldown();
     switch (gboard.getGestureCode()) {
       case fWE:
-        Serial.println("WE, toggled");
+        //Serial.println("WE, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -108,7 +95,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fEW:
-        Serial.println("EW, toggled");
+        //Serial.println("EW, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -118,7 +105,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fSN:
-        Serial.println("SN, effects");
+        //Serial.println("SN, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {
@@ -128,7 +115,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fNS:
-        Serial.println("NS, effects");
+        //Serial.println("NS, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {
@@ -142,7 +129,6 @@ void loop() {
     }
   }
 
-
   if (brightnessChange) {
     brightnessChange = false;
     if (brightnessUp) {
@@ -153,19 +139,6 @@ void loop() {
   }
 
   strips.setStripsOn (digitalRead(REED_PIN), groupDrawer);
-
-  //DateTime dateTimeNow = rtc.now();
-  //Serial.print(dateTimeNow.hour()); Serial.print(":"); Serial.print(dateTimeNow.minute()); Serial.print(":"); Serial.println(dateTimeNow.second());
-  //Serial.print(dateTimeNow.year()); Serial.print("-"); Serial.print(dateTimeNow.month()); Serial.print("-"); Serial.println(dateTimeNow.day());
-
-  if (testAlarm) {
-    //rtc.adjust(DateTime (17, 5, 24, 19, 35, 35));
-    //strips.toggle (1);
-    //alarms.__debug_startAlarm();
-    //DateTime dateTimeNow = rtc.now();
-    //alarms.setAlarm (Alarm (B11111111, dateTimeNow.hour(), dateTimeNow.minute() + 1, 1, 0, 1));
-    testAlarm = false;
-  }
 
   //polling information and effect updates
   gboard.checkTimeout();

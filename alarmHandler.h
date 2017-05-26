@@ -6,7 +6,7 @@
 #include "stripHandler.h"
 #include "RTClib.h"
 
-#define NR_ALARMS 20
+#define NR_ALARMS 150
 
 #define PAUSE_ALARM 1000
 
@@ -42,12 +42,6 @@ class AlarmHandler {
 
     inline bool getIsRinging () {
       return isRinging;
-    }
-
-    inline void __debug_startAlarm() {
-      Serial.println("starting alarm");
-      isRinging = true;
-      strips->alarm (true);
     }
 };
 

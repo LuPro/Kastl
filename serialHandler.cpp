@@ -150,8 +150,7 @@ void SerialHandler::parseTime (const uint8_t &data) {
     case 4:
       mon |= (data & B10000000) >> 7;
       y = data & B01111111;
-
-      //ToDo: doW can't be saved, add this yourself so alarms can work properly
+      
       rtc->adjust (DateTime (y, mon, doM, h, m, s));
       byteOffset = 0;
       break;
