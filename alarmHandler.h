@@ -28,7 +28,6 @@ class AlarmHandler {
     AlarmHandler (StripHandler &strips, SoundHandler &buzzer);
   
     void setAlarm (const Alarm &newAlarm);
-    void editAlarm (const Alarm &alarmToEdit, const Alarm &newAlarm);   //ToDo: Work out whether or not this is really needed (Does the dataprotocoll leave any use cases for it?
     void deleteAlarm (const Alarm &alarm);
     void deleteAllAlarms();
 

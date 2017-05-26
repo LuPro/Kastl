@@ -138,7 +138,7 @@ void loop() {
     }
   }
 
-  strips.setStripsOn (digitalRead(REED_PIN), groupDrawer);
+  strips.setStripsOn (!digitalRead(REED_PIN), groupDrawer);
 
   //polling information and effect updates
   gboard.checkTimeout();

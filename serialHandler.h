@@ -42,6 +42,7 @@ class SerialHandler {
       this->alarms = &alarms;
       this->rtc = &rtc;
     }
+    
     void poll();
 };
 

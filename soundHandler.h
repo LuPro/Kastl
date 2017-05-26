@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 
-//#define PIEZO_PIN PB1
-#define PIEZO_PIN 9
+#define PIEZO_PIN 9//PB1
 
 class SoundHandler {
   private:

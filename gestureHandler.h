@@ -47,8 +47,6 @@ class GestureHandler {
     }
 
     void setGestureBit (const uint8_t &pin);
-
-    void triggerTMR();
 };
 
 #endif

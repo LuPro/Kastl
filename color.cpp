@@ -11,7 +11,7 @@ Color::Color (const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_
   this->alpha = alpha;
 }
 
-//converts RGBa color to RGB color
+//converts GRBa color to GRB color
 uint32_t Color::RGBa_to_RGB (const uint32_t &RGBa) const {
   uint32_t val_RGB = 0;
   uint8_t r, g, b, alpha;
@@ -37,7 +37,7 @@ uint32_t Color::RGBa_to_RGB (const uint32_t &RGBa) const {
   return val_RGB;
 }
 
-//generates a RGBa color, is only used for debugging purposes, could be used later on for advanced strip effects as a helper function
+//generates a GRBa color, is only used for debugging purposes, could be used later on for advanced strip effects as a helper function
 uint32_t Color::generateRGBa (const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &alpha) const {
   uint32_t RGBa = 0;
 

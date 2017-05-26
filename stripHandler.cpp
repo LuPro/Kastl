@@ -96,12 +96,12 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
     }
 
     if (currentEffect[group] > NR_EFFECTS + 1) {
-      //currentEffect[group] = NR_EFFECTS;
-      currentEffect[group] = 6;
+      currentEffect[group] = NR_EFFECTS;
+      //currentEffect[group] = 6;
     }
 
-    //currentEffect[group] %= NR_EFFECTS - 1;
-    currentEffect[group] %= 7;    //only for debugging
+    currentEffect[group] %= NR_EFFECTS + 1;
+    //currentEffect[group] %= 7;
     //Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
     if (group == groupTop) {
