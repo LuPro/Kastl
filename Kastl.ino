@@ -38,8 +38,7 @@ void setup() {
 
   analogReference (EXTERNAL);
 
-  Serial.begin(9600); //this only works if the Serial library has been edited to work with the 8MHz clock
-  //if this is not the case, use 4800 baud instead to get 9600 baud
+  Serial.begin(9600);
 
   while (!rtc.begin());
 
