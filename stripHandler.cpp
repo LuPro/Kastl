@@ -22,25 +22,21 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
       break;
     case rainbowSlow:
       currentEffect[group] = rainbowSlow;
-      //primaryCol[group] = color;      //sollte nicht nötig sein, dadurch merkt er sich die alte farbe
       rainbowCycle (group, DELAY_RAINBOW_SLOW);
       stripsOn[group] = true;
       break;
     case rainbowFast:
       currentEffect[group] = rainbowFast;
-      //primaryCol[group] = color;
       rainbowCycle (group, DELAY_RAINBOW_FAST);
       stripsOn[group] = true;
       break;
     case altRainbowSlow:
       currentEffect[group] = altRainbowSlow;
-      //primaryCol[group] = color;
       altRainbow (group, DELAY_ALT_RAINBOW_SLOW);
       stripsOn[group] = true;
       break;
     case altRainbowFast:
       currentEffect[group] = altRainbowFast;
-      //primaryCol[group] = color;
       altRainbow (group, DELAY_ALT_RAINBOW_FAST);
       stripsOn[group] = true;
       break;
