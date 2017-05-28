@@ -183,7 +183,7 @@ void StripHandler::breathing (const Color &color, const uint8_t &group, const ui
 }
 
 void StripHandler::rainbowCycle (const uint8_t &group, const uint16_t &delayTime) {
-  static uint16_t rainbowPos = 0; //check if this is needed as uint16 (also in altRainbow)
+  static uint16_t rainbowPos = 0;
   unsigned long now = millis();
   Color col;
 
