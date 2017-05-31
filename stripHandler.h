@@ -9,17 +9,14 @@
 #define NR_LEDS_UP 10
 #define DATA_PIN_UP PD5       //HW Pin 11
 
-#define NR_LEDS_MID_UP 4
-#define DATA_PIN_MID_UP PD7      //HW Pin 12
-
-#define NR_LEDS_MID_DN NR_LEDS_MID_UP
-#define DATA_PIN_MID_DN DATA_PIN_MID_UP      //HW Pin 12
+#define NR_LEDS_MID 4
+#define DATA_PIN_MID PD7      //HW Pin 12
 
 #define NR_LEDS_DRAWER 6
 #define DATA_PIN_DRAWER PD6   //HW Pin 13
 
 #define ALPHA_STEP_SIZE 10
-#define ALPHA_BORDER_DN 20
+#define ALPHA_BORDER_DN 15
 
 #define DELAY_BREATHING_SLOW 80
 #define DELAY_BREATHING_FAST 20
@@ -47,7 +44,8 @@ enum Effects {
 
 enum LightGroup {
   groupTop,
-  groupDrawer
+  groupDrawer,
+  allGroups
 };
 
 enum Strips { //enumeration for the different LED strips
@@ -68,7 +66,7 @@ class StripHandler {
   
     Adafruit_NeoPixel strips[NR_STRIPS] = { //define the individual LED strips (top, mid, drawer)
       Adafruit_NeoPixel(NR_LEDS_UP, DATA_PIN_UP, NEO_RGB + NEO_KHZ800),
-      Adafruit_NeoPixel(NR_LEDS_MID_UP, DATA_PIN_MID_UP, NEO_RGB + NEO_KHZ800),
+      Adafruit_NeoPixel(NR_LEDS_MID, DATA_PIN_MID, NEO_RGB + NEO_KHZ800),
       Adafruit_NeoPixel(NR_LEDS_DRAWER, DATA_PIN_DRAWER, NEO_RGB + NEO_KHZ800)
     };
 

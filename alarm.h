@@ -31,8 +31,8 @@ class Alarm : Time {
     Alarm operator= (const Alarm &alarm);
     bool operator== (const Alarm &alarm);
 
-    uint8_t getAlarmMinute();
-    uint8_t getAlarmHour();
+    uint8_t getAlarmMinute() const;
+    uint8_t getAlarmHour() const;
     uint8_t getNextDay (const uint8_t &currentDay);
 
     //fetches the sctiveFlag that's nested inside the activeDays variable
@@ -42,6 +42,10 @@ class Alarm : Time {
     
     inline uint8_t getSnoozeTime () {
       return snoozeTime;
+    }
+
+    inline uint8_t getSound () {
+      return sound;
     }
 };
 

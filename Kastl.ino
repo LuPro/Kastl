@@ -42,10 +42,6 @@ void setup() {
 
   while (!rtc.begin());
 
-  if (rtc.lostPower()) {
-    //maybe make a warning sound here
-  }
-
   //airwheel data
   //set INT1 & INT0 to trigger on rising. INT1 B[3:2], INT0 B[1:0]
   EICRA = B00001111;
@@ -56,9 +52,9 @@ void setup() {
 
   //gesture data
   //enable the individual pins for interrupts
-  PCMSK0 = B00000001; //enable PCINT on PCINT0, which corresponds to hardware pin 14 (pin 8 on arduino uno)
-  PCMSK1 = B00000001; //enable PCINT on PCINT8, which corresponds to hardware pin 23 (pin 14 on arduino uno)
-  PCMSK2 = B00010000; //enable PCINT on PCINT20, which corresponds to hardware pin 6 (pin 4 on arduino uno)
+  PCMSK0 = B00000001; //enable PCINT on PCINT0, which corresponds to hardware pin 14
+  PCMSK1 = B00000001; //enable PCINT on PCINT8, which corresponds to hardware pin 23
+  PCMSK2 = B00010000; //enable PCINT on PCINT20, which corresponds to hardware pin 6
   //resets interrupt flags to 1 (active LOW)
   PCIFR = B00000111;
   //enable Pin change interrupts 2, 1 and 0
@@ -76,6 +72,7 @@ void loop() {
   static SerialHandler serial (strips, alarms, rtc);
 
   if (millis() < gboard.getCooldown() && gboard.gC_isClean()) {
+    Serial.println("Ignored Gesture");
     gboard.set_cleanFlag_gC (false);
     gboard.clear_gC ();
   }
@@ -84,7 +81,7 @@ void loop() {
     gboard.setCooldown();
     switch (gboard.getGestureCode()) {
       case fWE:
-        //Serial.println("WE, toggled");
+        Serial.println("WE, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -94,7 +91,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fEW:
-        //Serial.println("EW, toggled");
+        Serial.println("EW, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -104,7 +101,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fSN:
-        //Serial.println("SN, effects");
+        Serial.println("SN, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {
@@ -114,7 +111,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fNS:
-        //Serial.println("NS, effects");
+        Serial.println("NS, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {

@@ -6,18 +6,16 @@
 #include "stripHandler.h"
 #include "RTClib.h"
 
-#define NR_ALARMS 150
-
-#define PAUSE_ALARM 1000
+#define NR_ALARMS 60
 
 class AlarmHandler {
   private:
     bool isRinging = false;
-    //make as many alarms as possible with RAM (at the end of the project; ~10% should stay for local variables)
     bool setAlarms[NR_ALARMS];
     Alarm alarms[NR_ALARMS];
     Alarm snoozedAlarm;
     uint8_t snoozeTime = 0;
+    uint8_t activeSound = 0;
 
     unsigned long nextUpdate = 0;
 

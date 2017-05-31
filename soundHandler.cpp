@@ -1,6 +1,6 @@
 #include "soundHandler.h"
 
-void SoundHandler::playAlarm (const uint16_t &frequency, const uint16_t &duration) {
-  tone (PIEZO_PIN, frequency, duration);
+void SoundHandler::playAlarm (const uint8_t &sound) {
+  tone (PIEZO_PIN, frequencies[sound] * 100, durations[sound] * 100);
 }
 

@@ -17,7 +17,6 @@ enum Modes {
 
 enum AlarmActions {
   create,
-  edit,
   deleteAlarm,
   clearAll
 };
@@ -25,7 +24,7 @@ enum AlarmActions {
 class SerialHandler {
   private:
     uint8_t byteOffset = 0; //keeps track of how many bytes got read since the status byte
-    uint8_t mode = 0;       //stores the mode (light, alarm)
+    uint8_t mode = 0;       //stores the mode (light, alarm, ...)
 
     //pointers to every other class the serialHandler gets information about so it can pass this information
     AlarmHandler *alarms;

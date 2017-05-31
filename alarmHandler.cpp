@@ -9,6 +9,8 @@ AlarmHandler::AlarmHandler (StripHandler &strips, SoundHandler &buzzer) {
 }
 
 void AlarmHandler::setAlarm (const Alarm &newAlarm) {
+  Serial.println("Set an alarm");
+  Serial.print(newAlarm.getAlarmHour()); Serial.print(":"); Serial.println(newAlarm.getAlarmMinute());
   uint8_t i;
   for (i = 0; (i < NR_ALARMS); i++) {
     if (!setAlarms[i]) {
@@ -21,6 +23,8 @@ void AlarmHandler::setAlarm (const Alarm &newAlarm) {
 }
 
 void AlarmHandler::deleteAlarm (const Alarm &alarm) {
+  Serial.print("Delete an alarm");
+  Serial.print(alarm.getAlarmHour()); Serial.print(":"); Serial.println(alarm.getAlarmMinute());
   for (uint8_t i = 0; i < NR_ALARMS; i++) {
     if (alarms[i] == alarm) {
       setAlarms[i] = false;
@@ -30,6 +34,7 @@ void AlarmHandler::deleteAlarm (const Alarm &alarm) {
 }
 
 void AlarmHandler::deleteAllAlarms () {
+  Serial.print("Delete all alarms");
   for (uint8_t i = 0; i < NR_ALARMS; i++) {
     setAlarms[i] = false;
   }
@@ -49,7 +54,9 @@ void AlarmHandler::pollAlarms (const DateTime &timeNow) {
             deleteAlarm (alarms[i]);
             snoozedAlarm = Alarm();
           }
+          Serial.println("ring ring ring fucker");
           snoozeTime = alarms[i].getSnoozeTime();
+          activeSound = alarms[i].getSound();
           isRinging = true;
           strips->alarm (true);
         }
@@ -62,15 +69,16 @@ void AlarmHandler::updateSound () {
   unsigned long now = millis();
 
   if (isRinging && now > nextUpdate) {
-    nextUpdate = now + PAUSE_ALARM;
-    buzzer->playAlarm (1000, PAUSE_ALARM >> 1);    //this needs to be changeable, not hardcoded
+    nextUpdate = now + buzzer->getDuration (activeSound);
+    buzzer->playAlarm (activeSound);
     strips->setStripsOn (true, groupTop);
-    strips->setTimeOff (now + (PAUSE_ALARM >> 1));
+    strips->setTimeOff (now + (buzzer->getDuration (activeSound) >> 1));
   }
 }
 
 void AlarmHandler::snooze (const DateTime &timeNow) {
   if (snoozeTime) {
+    Serial.println("Alarm snoozes");
     uint8_t h, m;
 
     h = timeNow.hour();
@@ -92,6 +100,7 @@ void AlarmHandler::snooze (const DateTime &timeNow) {
 }
 
 void AlarmHandler::dismiss() {
+  Serial.println("Alarm dismissed");
   isRinging = false;
   strips->alarm (false);
 }
