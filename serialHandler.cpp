@@ -38,9 +38,6 @@ void SerialHandler::parseColor (const uint8_t &data) {
       group = ((data & B00110000) >> 4);
       effect = (data & B00001111);
       byteOffset++;
-      if (group == 2) {
-        group = 0;
-      }
       Serial.print("Group: "); Serial.println(group);
       Serial.print("Effect: "); Serial.println(effect);
       break;
