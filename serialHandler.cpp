@@ -38,27 +38,21 @@ void SerialHandler::parseColor (const uint8_t &data) {
       group = ((data & B00110000) >> 4);
       effect = (data & B00001111);
       byteOffset++;
-      Serial.print("Group: "); Serial.println(group);
-      Serial.print("Effect: "); Serial.println(effect);
       break;
     case 1:
       color.setCh_r (data);
       byteOffset++;
-      Serial.print("Red: "); Serial.println(data);
       break;
     case 2:
       color.setCh_g (data);
       byteOffset++;
-      Serial.print("Green: "); Serial.println(data);
       break;
     case 3:
       color.setCh_b (data);
       byteOffset++;
-      Serial.print("Blue: "); Serial.println(data);
       break;
     case 4:
       color.setCh_alpha (data);
-      Serial.print("Alpha: "); Serial.println(data);
 
       if (group == allGroups) {
         strips->setup (color, groupTop, effect);
@@ -85,25 +79,22 @@ void SerialHandler::parseAlarm (const uint8_t &data) {
       sound = (data & B00111110) >> 1;
       doW = (data & B00000001) << 6;
       byteOffset++;
-      Serial.print("sound: "); Serial.println(sound);
       break;
     case 1:
       doW |= (data & B11111100) >> 2;
       action = data & B00000011;
       byteOffset++;
-      Serial.print("doW: "); Serial.println(doW, BIN);
       break;
     case 2:
       snoozeTime = (data & B11111000) >> 3;
       h = (data & B00000111) << 2;
       byteOffset++;
-      Serial.print("snooze: "); Serial.println(snoozeTime);
       break;
     case 3:
       h |= (data & B11000000) >> 6;
       m = data & B00111111;
       byteOffset++;
-      Serial.print(h); Serial.print(":"); Serial.println(m);
+      Serial.print("Alarm received: "); Serial.print(h); Serial.print(":"); Serial.println(m);
       break;
     case 4:
       volume = data;

@@ -72,7 +72,6 @@ void loop() {
   static SerialHandler serial (strips, alarms, rtc);
 
   if (millis() < gboard.getCooldown() && gboard.gC_isClean()) {
-    Serial.println("Ignored Gesture");
     gboard.set_cleanFlag_gC (false);
     gboard.clear_gC ();
   }
@@ -81,7 +80,7 @@ void loop() {
     gboard.setCooldown();
     switch (gboard.getGestureCode()) {
       case fWE:
-        Serial.println("WE, toggled");
+        //Serial.println("WE, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -91,7 +90,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fEW:
-        Serial.println("EW, toggled");
+        //Serial.println("EW, toggled");
         if (alarms.getIsRinging()) {
           alarms.snooze (rtc.now());
         } else {
@@ -101,7 +100,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fSN:
-        Serial.println("SN, effects");
+        //Serial.println("SN, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {
@@ -111,7 +110,7 @@ void loop() {
         gboard.clear_gC ();
         break;
       case fNS:
-        Serial.println("NS, effects");
+        //Serial.println("NS, effects");
         if (alarms.getIsRinging()) {
           alarms.dismiss();
         } else {

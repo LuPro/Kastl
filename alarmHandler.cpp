@@ -9,8 +9,8 @@ AlarmHandler::AlarmHandler (StripHandler &strips, SoundHandler &buzzer) {
 }
 
 void AlarmHandler::setAlarm (const Alarm &newAlarm) {
-  Serial.println("Set an alarm");
-  Serial.print(newAlarm.getAlarmHour()); Serial.print(":"); Serial.println(newAlarm.getAlarmMinute());
+  //Serial.println("Set an alarm");
+  //Serial.print(newAlarm.getAlarmHour()); Serial.print(":"); Serial.println(newAlarm.getAlarmMinute());
   uint8_t i;
   for (i = 0; (i < NR_ALARMS); i++) {
     if (!setAlarms[i]) {
@@ -23,8 +23,8 @@ void AlarmHandler::setAlarm (const Alarm &newAlarm) {
 }
 
 void AlarmHandler::deleteAlarm (const Alarm &alarm) {
-  Serial.print("Delete an alarm");
-  Serial.print(alarm.getAlarmHour()); Serial.print(":"); Serial.println(alarm.getAlarmMinute());
+  //Serial.print("Delete an alarm");
+  //Serial.print(alarm.getAlarmHour()); Serial.print(":"); Serial.println(alarm.getAlarmMinute());
   for (uint8_t i = 0; i < NR_ALARMS; i++) {
     if (alarms[i] == alarm) {
       setAlarms[i] = false;
@@ -34,7 +34,7 @@ void AlarmHandler::deleteAlarm (const Alarm &alarm) {
 }
 
 void AlarmHandler::deleteAllAlarms () {
-  Serial.print("Delete all alarms");
+  //Serial.print("Delete all alarms");
   for (uint8_t i = 0; i < NR_ALARMS; i++) {
     setAlarms[i] = false;
   }
@@ -54,7 +54,7 @@ void AlarmHandler::pollAlarms (const DateTime &timeNow) {
             deleteAlarm (alarms[i]);
             snoozedAlarm = Alarm();
           }
-          Serial.println("ring ring ring fucker");
+          //Serial.println("alarm start");
           snoozeTime = alarms[i].getSnoozeTime();
           activeSound = alarms[i].getSound();
           isRinging = true;
@@ -78,7 +78,7 @@ void AlarmHandler::updateSound () {
 
 void AlarmHandler::snooze (const DateTime &timeNow) {
   if (snoozeTime) {
-    Serial.println("Alarm snoozes");
+    //Serial.println("Alarm snoozes");
     uint8_t h, m;
 
     h = timeNow.hour();
@@ -100,7 +100,7 @@ void AlarmHandler::snooze (const DateTime &timeNow) {
 }
 
 void AlarmHandler::dismiss() {
-  Serial.println("Alarm dismissed");
+  //Serial.println("Alarm dismissed");
   isRinging = false;
   strips->alarm (false);
 }

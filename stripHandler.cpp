@@ -48,11 +48,9 @@ void StripHandler::setup (const Color &color, const uint8_t &group, const uint8_
 //reduce alphaUp and alphaDown alpha changes, but increase frequency in gesture board settings
 void StripHandler::alphaUp () {
   if (stripsOn[groupTop] == false) {
-    Serial.println("alpha up, but off");
     return;
   }
 
-  Serial.println("alphaUp");
   uint8_t alpha;
   alpha = primaryCol[groupTop].getCh_alpha();
   if (alpha > 255 - ALPHA_STEP_SIZE) {
@@ -65,11 +63,9 @@ void StripHandler::alphaUp () {
 
 void StripHandler::alphaDown () {
   if (stripsOn[groupTop] == false) {
-    Serial.println("alpha down, but off");
     return;
   }
 
-  Serial.println("alphaDown");
   uint8_t alpha;
   alpha = primaryCol[groupTop].getCh_alpha();
   if (alpha < ALPHA_BORDER_DN + ALPHA_STEP_SIZE) {
@@ -96,7 +92,7 @@ void StripHandler::cycleEffects (const uint8_t &group, const bool &up) {
     }
 
     currentEffect[group] %= NR_EFFECTS + 1;
-    Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
+    //Serial.print("Current Effect: "); Serial.println(currentEffect[group]);
   } else {
     if (group == groupTop) {
       toggle(groupTop);
